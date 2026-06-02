@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEZOR — Hogyan szerezz több megrendelőt online?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;800;900&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; overflow-x: hidden; }
+    body { font-family: 'Montserrat', sans-serif; background: #F0F9FF; color: #0F172A; }
+
+    /* ══════════════════════════
+       DESKTOP (768px+)
+    ══════════════════════════ */
+    .desktop { display: block; width: 100%; }
+    .mobile  { display: none; }
+
+    @keyframes hColor {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    @keyframes btnPulse {
+      0%,100% { box-shadow: 0 0 28px rgba(132,204,22,0.5); }
+      50%      { box-shadow: 0 0 48px rgba(132,204,22,0.8); }
+    }
+    @keyframes shine {
+      0%  { transform: translateX(-140%) skewX(-20deg); opacity: 0; }
+      18% { opacity: 0.7; }
+      32% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
+      100%{ transform: translateX(220%) skewX(-20deg); opacity: 0; }
+    }
+    @keyframes dot {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.6); opacity: 0.5; }
+    }
+    @keyframes gridMove {
+      0%   { background-position: 0 0,0 0; }
+      100% { background-position: 64px 64px,64px 64px; }
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 80px 40px 96px;
+      overflow: hidden;
+      background: linear-gradient(155deg, #EFF6FF 0%, #F0F9FF 50%, #F0FDF4 100%);
+    }
+    .page-grid {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .page-blob-a {
+      position: absolute; width: 60%; height: 70%; top: -20%; left: -10%;
+      background: radial-gradient(ellipse, rgba(14,165,233,0.15) 0%, transparent 65%);
+      filter: blur(70px); pointer-events: none; z-index: 0;
+    }
+    .page-blob-b {
+      position: absolute; width: 55%; height: 60%; bottom: -20%; right: -8%;
+      background: radial-gradient(ellipse, rgba(132,204,22,0.13) 0%, transparent 65%);
+      filter: blur(70px); pointer-events: none; z-index: 0;
+    }
+    .page > *:not(.page-grid):not(.page-blob-a):not(.page-blob-b) { position: relative; z-index: 1; }
+
+    /* Logo */
+    .logo { font-family: 'Unbounded', sans-serif; font-size: 32px; font-weight: 900; color: #0C1A2E; margin-bottom: 52px; }
+    .logo span { color: #84CC16; }
+
+    /* Badge */
+    .badge {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.3);
+      border-radius: 50px; padding: 14px 32px; font-size: 16px; font-weight: 700;
+      color: #0284C7; margin-bottom: 40px;
+    }
+    .badge-dot { width: 12px; height: 12px; background: #84CC16; border-radius: 50%; animation: dot 2s infinite; flex-shrink: 0; }
+
+    /* Headline */
+    .h1 {
+      font-family: 'Unbounded', sans-serif; font-size: clamp(36px, 5.2vw, 78px);
+      font-weight: 900; line-height: 1.07; width: min(1100px, 100%); margin-bottom: 14px;
+      background: linear-gradient(135deg, #0C1A2E 0%, #0EA5E9 28%, #84CC16 52%, #0EA5E9 76%, #0C1A2E 100%);
+      background-size: 400% 400%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: hColor 8s ease infinite;
+    }
+    .h1-green {
+      font-family: 'Unbounded', sans-serif; font-size: clamp(32px, 4.8vw, 70px);
+      font-weight: 900; line-height: 1.07; display: block; margin-bottom: 40px;
+      background: linear-gradient(135deg, #84CC16, #65A30D, #84CC16);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: hColor 6s ease infinite;
+    }
+
+    /* Subtext */
+    .sub { font-size: clamp(18px, 2.2vw, 26px); color: #334155; width: min(860px,100%); margin-bottom: 60px; font-weight: 500; line-height: 1.75; }
+    .sub strong { color: #0284C7; font-weight: 800; }
+
+    /* Sürgősség sáv */
+    .urgency {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.28);
+      border-radius: 50px; padding: 14px 32px; margin-bottom: 48px;
+      font-size: 16px; font-weight: 600; color: #DC2626;
+    }
+    .urgency strong { font-weight: 800; }
+    .urg-dot { width: 10px; height: 10px; background: #EF4444; border-radius: 50%; flex-shrink: 0; animation: dot 1.5s infinite; }
+
+    /* Pills */
+    .pills {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-bottom: 60px; width: min(1100px, 100%);
+    }
+    .pill {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      background: #fff; border: 1px solid rgba(14,165,233,0.22);
+      border-radius: 22px; padding: 24px 32px; font-size: 18px; font-weight: 700; color: #334155;
+      box-shadow: 0 4px 16px rgba(14,165,233,0.1); text-align: center;
+    }
+    .pill-blur { filter: blur(5px); color: #0EA5E9; font-weight: 800; }
+
+    /* Stats */
+    .stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      width: min(1100px,100%); border-bottom: 1px solid rgba(14,165,233,0.15);
+      padding-bottom: 40px; margin-bottom: 40px;
+    }
+    .stat { text-align: center; padding: 12px 24px; position: relative; }
+    .stat + .stat::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 1px; height: 56px; background: rgba(14,165,233,0.18);
+    }
+    .stat-n {
+      font-family: 'Unbounded', sans-serif; font-size: clamp(32px, 4.5vw, 60px);
+      font-weight: 900; color: #0EA5E9; display: block; line-height: 1;
+    }
+    .stat-n.g { color: #65A30D; font-size: clamp(22px, 3vw, 40px); }
+    .stat-l { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #64748B; margin-top: 10px; display: block; }
+
+    /* Social proof */
+    .proof { display: flex; align-items: center; gap: 36px; justify-content: center; flex-wrap: wrap; margin-bottom: 64px; }
+    .proof-avatars { display: flex; }
+    .proof-av {
+      width: 96px; height: 96px; border-radius: 50%; border: 4px solid #fff;
+      background: #fff; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      margin-left: -24px; box-shadow: 0 6px 22px rgba(0,0,0,0.14);
+      padding: 8px; flex-shrink: 0;
+    }
+    .proof-av:first-child { margin-left: 0; }
+    .proof-av img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .proof-text { font-size: 24px; color: #334155; font-weight: 600; }
+    .proof-text strong { color: #0284C7; font-size: 24px; }
+    .proof-stars { color: #F59E0B; font-size: 28px; letter-spacing: 4px; }
+
+    /* Form */
+    .form-box {
+      width: min(1000px, 100%); background: #fff;
+      border: 1px solid rgba(14,165,233,0.2); border-radius: 36px;
+      padding: 64px 72px; box-shadow: 0 36px 90px rgba(14,165,233,0.16);
+      margin-bottom: 52px;
+    }
+    .form-title { font-family: 'Unbounded', sans-serif; font-size: 36px; font-weight: 800; color: #0C1A2E; margin-bottom: 12px; }
+    .form-sub { font-size: 20px; color: #64748B; margin-bottom: 36px; }
+    .form-input {
+      width: 100%; background: #F8FAFC; border: 2px solid rgba(14,165,233,0.2);
+      border-radius: 18px; padding: 26px 28px; color: #0F172A;
+      font-family: 'Montserrat', sans-serif; font-size: 20px; outline: none;
+      transition: all 0.25s; margin-bottom: 18px; display: block;
+    }
+    .form-input::placeholder { color: #94A3B8; }
+    .form-input:focus { border-color: #0EA5E9; box-shadow: 0 0 0 5px rgba(14,165,233,0.1); background: #fff; }
+    .form-btn {
+      width: 100%; background: linear-gradient(125deg, #84CC16, #65A30D, #84CC16);
+      background-size: 220% 220%; color: #fff; border: none; border-radius: 18px;
+      padding: 30px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 26px;
+      cursor: pointer; position: relative; overflow: hidden; transition: transform 0.3s;
+      animation: btnPulse 3s ease infinite; letter-spacing: 0.02em;
+    }
+    .form-btn::before {
+      content: ''; position: absolute; top: -30%; left: 0; width: 30%; height: 160%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      animation: shine 3s ease-in-out infinite; pointer-events: none;
+    }
+    .form-btn:hover { transform: translateY(-3px) scale(1.02); }
+    .form-note { text-align: center; font-size: 16px; color: #94A3B8; margin-top: 18px; }
+    .form-redirect { text-align: center; font-size: 15px; color: #64748B; margin-top: 10px; font-weight: 500; }
+
+    .foot { margin-top: 52px; font-size: 15px; color: #94A3B8; }
+    .foot a { color: #64748B; text-decoration: underline; }
+
+    /* Testimonial strip (unused but kept) */
+    .testimonial-strip { display: none; }
+
+    /* ══════════════════════════
+       MOBILE (max 767px)
+    ══════════════════════════ */
+    @media (max-width: 767px) {
+      .desktop { display: none; }
+      .mobile  { display: flex; flex-direction: column; align-items: center; }
+
+      .mob-page {
+        width: 100%; min-height: 100vh;
+        background: linear-gradient(155deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+        display: flex; flex-direction: column; align-items: center;
+        padding: 40px 20px 60px; text-align: center;
+        overflow: hidden; position: relative;
+      }
+      .mob-grid {
+        position: absolute; inset: 0; pointer-events: none;
+        background-image:
+          linear-gradient(rgba(14,165,233,0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(14,165,233,0.08) 1px, transparent 1px);
+        background-size: 48px 48px;
+      }
+      .mob-page > *:not(.mob-grid) { position: relative; z-index: 1; width: 100%; }
+
+      .mob-logo { font-family: 'Unbounded', sans-serif; font-size: 22px; font-weight: 900; color: #0C1A2E; margin-bottom: 28px; }
+      .mob-logo span { color: #84CC16; }
+
+      .mob-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.28);
+        border-radius: 50px; padding: 9px 18px; font-size: 12px; font-weight: 700;
+        color: #0284C7; margin-bottom: 24px; justify-content: center;
+      }
+      .mob-bdot { width: 8px; height: 8px; background: #84CC16; border-radius: 50%; animation: dot 2s infinite; flex-shrink: 0; }
+
+      .mob-urgency {
+        display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+        background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+        border-radius: 14px; padding: 12px 16px; margin-bottom: 22px;
+        font-size: 13px; font-weight: 600; color: #DC2626; text-align: center;
+      }
+      .mob-urgency strong { font-weight: 800; }
+      .mob-urg-dot { width: 8px; height: 8px; background: #EF4444; border-radius: 50%; flex-shrink: 0; animation: dot 1.5s infinite; }
+
+      .mob-testimonial {
+        background: #fff; border: 1px solid rgba(14,165,233,0.18);
+        border-radius: 16px; padding: 18px 18px; margin-bottom: 16px;
+        box-shadow: 0 3px 12px rgba(14,165,233,0.07);
+      }
+      .mob-ts-quote { font-size: 13px; color: #334155; line-height: 1.65; font-style: italic; margin-bottom: 12px; }
+      .mob-ts-quote::before { content: '"'; color: #0EA5E9; font-size: 18px; font-weight: 900; margin-right: 2px; }
+      .mob-ts-author { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #475569; }
+      .mob-ts-av {
+        width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+        background: linear-gradient(135deg, #0EA5E9, #84CC16);
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Unbounded', sans-serif; font-size: 9px; font-weight: 900; color: #fff;
+      }
+      .mob-ts-author strong { color: #0C1A2E; }
+
+      .mob-h1 {
+        font-family: 'Unbounded', sans-serif; font-size: 30px;
+        font-weight: 900; line-height: 1.12; margin-bottom: 8px;
+        background: linear-gradient(135deg, #0C1A2E, #0EA5E9, #84CC16);
+        background-size: 300% 300%;
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        animation: hColor 8s ease infinite;
+      }
+      .mob-h1g {
+        font-family: 'Unbounded', sans-serif; font-size: 28px;
+        font-weight: 900; line-height: 1.12; display: block; margin-bottom: 22px;
+        background: linear-gradient(135deg, #84CC16, #65A30D);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      }
+      .mob-sub { font-size: 15px; color: #334155; line-height: 1.7; margin-bottom: 28px; font-weight: 500; }
+      .mob-sub strong { color: #0284C7; font-weight: 800; }
+
+      /* Mobile pills — 1 oszlop */
+      .mob-pills { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 28px; }
+      .mob-pill {
+        display: flex; align-items: center; gap: 12px;
+        background: #fff; border: 1px solid rgba(14,165,233,0.2);
+        border-radius: 14px; padding: 16px 18px; font-size: 15px; font-weight: 700; color: #334155;
+        box-shadow: 0 2px 8px rgba(14,165,233,0.08); text-align: left;
+      }
+      .mob-pill svg { flex-shrink: 0; }
+
+      /* Mobile form */
+      .mob-form {
+        background: #fff; border: 1px solid rgba(14,165,233,0.18);
+        border-radius: 22px; padding: 28px 22px;
+        box-shadow: 0 16px 48px rgba(14,165,233,0.14); margin-bottom: 28px;
+      }
+      .mob-form-title { font-family: 'Unbounded', sans-serif; font-size: 17px; font-weight: 800; color: #0C1A2E; margin-bottom: 6px; }
+      .mob-form-sub { font-size: 13px; color: #64748B; margin-bottom: 20px; }
+      .mob-input {
+        width: 100%; background: #F8FAFC; border: 1.5px solid rgba(14,165,233,0.2);
+        border-radius: 12px; padding: 15px 16px; color: #0F172A;
+        font-family: 'Montserrat', sans-serif; font-size: 16px; outline: none;
+        transition: all 0.25s; margin-bottom: 12px; display: block;
+      }
+      .mob-input::placeholder { color: #94A3B8; }
+      .mob-input:focus { border-color: #0EA5E9; box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+      .mob-btn {
+        width: 100%; background: linear-gradient(125deg, #84CC16, #65A30D);
+        color: #fff; border: none; border-radius: 12px;
+        padding: 18px; font-family: 'Montserrat', sans-serif;
+        font-weight: 800; font-size: 16px; cursor: pointer;
+        box-shadow: 0 8px 24px rgba(132,204,22,0.4);
+        animation: btnPulse 3s ease infinite;
+      }
+      .mob-note { font-size: 11px; color: #94A3B8; margin-top: 10px; }
+      .mob-redirect { font-size: 12px; color: #64748B; margin-top: 8px; font-weight: 500; text-align: center; }
+
+      /* Mobile proof */
+      .mob-proof { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 32px; }
+      .mob-avs { display: flex; }
+      .mob-av {
+        width: 72px; height: 72px; border-radius: 50%; border: 3px solid #fff;
+        background: #fff; overflow: hidden;
+        display: flex; align-items: center; justify-content: center;
+        margin-left: -18px; box-shadow: 0 4px 12px rgba(0,0,0,0.14);
+        padding: 6px; flex-shrink: 0;
+      }
+      .mob-av:first-child { margin-left: 0; }
+      .mob-av img { width: 100%; height: 100%; object-fit: contain; display: block; }
+      .mob-proof-txt { font-size: 18px; color: #334155; font-weight: 600; }
+      .mob-proof-txt strong { color: #0284C7; font-size: 18px; }
+      .mob-stars { color: #F59E0B; font-size: 22px; letter-spacing: 3px; }
+
+      /* Mobile stats */
+      .mob-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; border-top: 1px solid rgba(14,165,233,0.15); padding-top: 24px; }
+      .mob-stat { text-align: center; padding: 6px 4px; position: relative; }
+      .mob-stat + .mob-stat::before {
+        content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+        width: 1px; height: 36px; background: rgba(14,165,233,0.18);
+      }
+      .mob-sn { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 900; color: #0EA5E9; display: block; line-height: 1; }
+      .mob-sn.g { color: #65A30D; font-size: 13px; }
+      .mob-sl { font-size: 8px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #64748B; margin-top: 5px; display: block; }
+
+      .mob-foot { margin-top: 32px; font-size: 11px; color: #94A3B8; }
+      .mob-foot a { color: #64748B; text-decoration: underline; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ DESKTOP ══ -->
+  <div class="desktop">
+    <div class="page">
+      <div class="page-grid"></div>
+      <div class="page-blob-a"></div>
+      <div class="page-blob-b"></div>
+
+      <div class="logo">NEZ<span>OR</span></div>
+
+      <div class="badge"><span class="badge-dot"></span>Csak építőiparosoknak · 5+ év tapasztalat</div>
+
+      <div class="h1">Az okát még senki nem mondta el neked,</div>
+      <span class="h1-green">miért nem hív elég ügyfél.</span>
+
+      <!-- 1. Subtext — rövidebb, tömörebb -->
+      <p class="sub">Megmutatjuk az <strong>„5 lépéses ügyfélszerzési útmutatót"</strong> — a pontos módszert, amivel több megrendelőt kaphatsz az internetről. Ingyen. Kötelezettség nélkül.</p>
+
+      <!-- 2. Sürgősség -->
+      <div class="urgency">
+        <span class="urg-dot"></span>
+        Csak az első 50 feliratkozónak elérhető · Még <strong id="spots-left">23</strong> hely szabad
+      </div>
+
+      <!-- 3. Pills — konkrétabb ígéretek -->
+      <div class="pills">
+        <div class="pill">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Miért nem talál rád Google-on senki <span class="pill-blur">→</span>
+        </div>
+        <div class="pill">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Hogyan szerezz 10+ értékelést gyorsan <span class="pill-blur">→</span>
+        </div>
+        <div class="pill">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Hogyan érj el helyi ügyfeleket Facebookon <span class="pill-blur">→</span>
+        </div>
+        <div class="pill">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#84CC16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+          10% kuponkód az első szolgáltatásra <span class="pill-blur">→</span>
+        </div>
+      </div>
+
+      <!-- 4. Stats + Social proof — form ELÉ -->
+      <div class="stats">
+        <div class="stat"><span class="stat-n">81%</span><span class="stat-l">Online keres munkást</span></div>
+        <div class="stat"><span class="stat-n g">INGYENES</span><span class="stat-l">Útmutató + kuponkód</span></div>
+        <div class="stat"><span class="stat-n">4×</span><span class="stat-l">Több hívás 10+ értékeléssel</span></div>
+      </div>
+
+      <div class="proof">
+        <div class="proof-avatars">
+          <div class="proof-av"><img src="estur.webp" alt="Estur" style="object-fit:cover; transform:scale(1.2) translateY(17%); z-index: 1;" /></div>
+          <div class="proof-av"><img src="cruisershop.webp" alt="Cruiser Shop" /></div>
+          <div class="proof-av"><img src="koronagomba.webp" alt="Koronagomba" style="object-fit:cover; transform:scale(2.8) translateY(13%);" /></div>
+          <div class="proof-av"><img src="nekedsutom.webp" alt="Neked Sütöm" /></div>
+          <div class="proof-av"><img src="image.webp" alt="Ügyfél" /></div>
+        </div>
+        <div>
+          <div class="proof-stars">★★★★★</div>
+          <div class="proof-text"><strong>20+ vállalkozás</strong> már alkalmazza ezt a rendszert</div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="form-box">
+        <p class="form-title">Küldöm az ingyenes útmutatót</p>
+        <p class="form-sub">Add meg az email címed — azonnal megkapod az „5 lépéses ügyfélszerzési útmutatót" + a 10% kuponkódot.</p>
+        <input class="form-input" type="email" placeholder="Email címed (pl. janos@gmail.com)" />
+        <button class="form-btn">Kérem az ingyenes útmutatót →</button>
+        <p class="form-note">🔒 Feliratkozással elfogadod az <a href="adatkezeles.html" target="_blank" style="color:#0284C7;text-decoration:underline;">adatkezelési tájékoztatót</a>. Spam: soha.</p>
+        <p class="form-redirect">Feliratkozás után azonnal átirányítunk az útmutatóhoz — nem kell várni, minden azonnal elérhető.</p>
+      </div>
+
+      <p class="foot">© 2026 NEZOR Webfejlesztés · <a href="mailto:info@nezor.hu">info@nezor.hu</a></p>
+    </div>
+  </div>
+
+  <!-- ══ MOBILE ══ -->
+  <div class="mobile">
+    <div class="mob-page">
+      <div class="mob-grid"></div>
+
+      <div class="mob-logo">NEZ<span>OR</span></div>
+
+      <div class="mob-badge"><span class="mob-bdot"></span>Építőiparosoknak · 5+ év tapasztalat</div>
+
+      <div class="mob-h1">Az okát még senki nem mondta el neked,</div>
+      <span class="mob-h1g">miért nem hív elég ügyfél.</span>
+
+      <p class="mob-sub">Megmutatjuk az <strong>„5 lépéses ügyfélszerzési útmutatót"</strong> — amivel több megrendelőt kaphatsz az internetről. Ingyen.</p>
+
+      <!-- Sürgősség -->
+      <div class="mob-urgency">
+        <span class="mob-urg-dot"></span>
+        Csak az első 50 feliratkozónak · Még <strong>23</strong> hely szabad
+      </div>
+
+      <div class="mob-pills">
+        <div class="mob-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Miért nem talál rád Google-on senki
+        </div>
+        <div class="mob-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Hogyan szerezz 10+ értékelést gyorsan
+        </div>
+        <div class="mob-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Hogyan érj el helyi ügyfeleket Facebookon
+        </div>
+        <div class="mob-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#84CC16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+          10% kuponkód az első szolgáltatásra
+        </div>
+      </div>
+
+      <!-- Stats + proof a form elé -->
+      <div class="mob-stats" style="margin-bottom:20px;">
+        <div class="mob-stat"><span class="mob-sn">81%</span><span class="mob-sl">Online keres munkást</span></div>
+        <div class="mob-stat"><span class="mob-sn g">INGYENES</span><span class="mob-sl">Útmutató + kód</span></div>
+        <div class="mob-stat"><span class="mob-sn">4×</span><span class="mob-sl">Több hívás</span></div>
+      </div>
+
+      <div class="mob-proof">
+        <div class="mob-avs">
+          <div class="mob-av"><img src="estur.webp" alt="Estur" style="object-fit:cover; transform:scale(1.3) translateY(17%);"/></div>
+          <div class="mob-av"><img src="cruisershop.webp" alt="Cruiser Shop" /></div>
+          <div class="mob-av"><img src="koronagomba.webp" alt="Koronagomba" style="object-fit:cover; transform:scale(2.8) translateY(13%);" /></div>
+          <div class="mob-av"><img src="nekedsutom.webp" alt="Neked Sütöm" /></div>
+          <div class="mob-av"><img src="image.webp" alt="Ügyfél" /></div>
+        </div>
+        <div class="mob-stars">★★★★★</div>
+        <div class="mob-proof-txt"><strong>20+ vállalkozó</strong> már alkalmazza ezt</div>
+      </div>
+
+      <div class="mob-form">
+        <p class="mob-form-title">Küldöm az ingyenes útmutatót</p>
+        <p class="mob-form-sub">Add meg az email címed — megkapod az „5 lépéses ügyfélszerzési útmutatót" + 10% kuponkódot.</p>
+        <input class="mob-input" type="email" placeholder="Email címed" />
+        <button class="mob-btn">Kérem az ingyenes útmutatót →</button>
+        <p class="mob-note">🔒 Feliratkozással elfogadod az <a href="adatkezeles.html" target="_blank" style="color:#0284C7;">adatkezelési tájékoztatót</a>. Spam: soha.</p>
+        <p class="mob-redirect">Feliratkozás után azonnal átirányítunk az útmutatóhoz — minden azonnal elérhető.</p>
+      </div>
+
+      <div class="mob-stats" style="border-top:none; padding-top:0; margin-top:0;">
+        <div class="mob-stat"><span class="mob-sn">81%</span><span class="mob-sl">Online keres munkást</span></div>
+        <div class="mob-stat"><span class="mob-sn g">INGYENES</span><span class="mob-sl">Útmutató + kód</span></div>
+        <div class="mob-stat"><span class="mob-sn">4×</span><span class="mob-sl">Több hívás</span></div>
+      </div>
+
+      <p class="mob-foot">© 2026 NEZOR · <a href="mailto:info@nezor.hu">info@nezor.hu</a></p>
+    </div>
+  </div>
+
+</body>
+</html>

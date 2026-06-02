@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEZOR — Online jelenlét építőiparosoknak</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0EA5E9;
+      --primary-dark: #0284C7;
+      --primary-light: #38BDF8;
+      --accent: #84CC16;
+      --accent-dark: #65A30D;
+      --hero-bg: #EFF6FF;
+      --white: #FFFFFF;
+      --dark: #0C1A2E;
+      --border-blue: rgba(14,165,233,0.22);
+      --muted: rgba(15,23,42,0.55);
+      --unbounded: 'Unbounded', sans-serif;
+      --montserrat: 'Montserrat', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    body { background: var(--hero-bg); color: #0F172A; font-family: var(--montserrat); font-size: 16px; line-height: 1.6; overflow-x: clip; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ════════════════════════════════
+       ANIMATIONS
+    ════════════════════════════════ */
+    @keyframes btnShift {
+      0%,100% { background-position: 0% 50%; box-shadow: 0 0 22px rgba(14,165,233,0.45), 0 0 44px rgba(14,165,233,0.18); }
+      50%      { background-position: 100% 50%; box-shadow: 0 0 28px rgba(2,132,199,0.5), 0 0 54px rgba(2,132,199,0.2); }
+    }
+    @keyframes accentShift {
+      0%,100% { background-position: 0% 50%; box-shadow: 0 0 22px rgba(132,204,22,0.45), 0 0 44px rgba(132,204,22,0.18); }
+      50%      { background-position: 100% 50%; box-shadow: 0 0 28px rgba(101,163,13,0.5), 0 0 54px rgba(101,163,13,0.2); }
+    }
+    @keyframes shine {
+      0%          { transform: translateX(-140%) skewX(-20deg); opacity: 0; }
+      18%         { opacity: 0.7; }
+      32%         { transform: translateX(220%) skewX(-20deg); opacity: 0; }
+      100%        { transform: translateX(220%) skewX(-20deg); opacity: 0; }
+    }
+    @keyframes pulseDot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%     { opacity:0.55; transform:scale(1.55); }
+    }
+    @keyframes gridMove {
+      0%   { background-position: 0 0, 0 0; }
+      100% { background-position: 64px 64px, 64px 64px; }
+    }
+    @keyframes auroraA {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(2vw,-3vh) scale(1.06); }
+      66%  { transform: translate(-2vw,2vh) scale(0.96); }
+    }
+    @keyframes auroraB {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%     { transform: translate(-2vw,-2vh) scale(1.1); }
+    }
+    @keyframes headlineColor {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes arrowBounce {
+      0%,100% { transform: translateY(-3px); }
+      50%     { transform: translateY(8px); }
+    }
+    @keyframes arrowPulse {
+      0%,100% { box-shadow: 0 10px 32px rgba(132,204,22,0.3), inset 0 0 22px rgba(132,204,22,0.18); }
+      50%     { box-shadow: 0 15px 46px rgba(132,204,22,0.48), inset 0 0 32px rgba(132,204,22,0.3); }
+    }
+    @keyframes borderGrad {
+      0%,100% { background-position: 0% 50%; }
+      50%     { background-position: 100% 50%; }
+    }
+    @keyframes playPulse {
+      0%,100% { box-shadow: 0 0 0 20px rgba(14,165,233,0.18), 0 0 0 42px rgba(14,165,233,0.07); }
+      50%     { box-shadow: 0 0 0 28px rgba(14,165,233,0.28), 0 0 0 56px rgba(14,165,233,0.12); }
+    }
+    @keyframes scanLine {
+      0%,10% { transform: translateX(-130%); opacity: 0; }
+      20%    { opacity: 0.75; }
+      60%    { transform: translateX(130%); opacity: 0; }
+      100%   { transform: translateX(130%); opacity: 0; }
+    }
+    @keyframes badgeFloat {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-5px); }
+    }
+
+    /* ════════════════════════════════
+       BUTTONS
+    ════════════════════════════════ */
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(125deg, #0EA5E9, #0284C7, #0EA5E9);
+      background-size: 220% 220%;
+      color: #fff; border: 1px solid rgba(255,255,255,0.25);
+      padding: 20px 56px; border-radius: 50px;
+      font-family: var(--montserrat); font-weight: 800; font-size: 17px;
+      cursor: pointer; animation: btnShift 8s ease infinite;
+      letter-spacing: 0.03em; position: relative; overflow: hidden;
+      transition: transform 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .btn-primary::before {
+      content: ''; position: absolute; top: -30%; left: 0; width: 32%; height: 170%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      animation: shine 3.4s ease-in-out infinite; pointer-events: none;
+    }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.03); }
+
+    .btn-accent {
+      display: inline-block;
+      background: linear-gradient(125deg, #84CC16, #65A30D, #84CC16);
+      background-size: 220% 220%;
+      color: #fff; border: 1px solid rgba(255,255,255,0.25);
+      padding: 20px 56px; border-radius: 50px;
+      font-family: var(--montserrat); font-weight: 800; font-size: 17px;
+      cursor: pointer; animation: accentShift 8s ease infinite;
+      letter-spacing: 0.03em; position: relative; overflow: hidden;
+      transition: transform 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .btn-accent::before {
+      content: ''; position: absolute; top: -30%; left: 0; width: 32%; height: 170%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      animation: shine 3.4s ease-in-out infinite 0.8s; pointer-events: none;
+    }
+    .btn-accent:hover { transform: translateY(-3px) scale(1.03); }
+
+    /* ════════════════════════════════
+       NAV
+    ════════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 48px; height: 72px;
+      background: rgba(240,249,255,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-blue);
+    }
+    .nav-logo {
+      font-family: var(--unbounded); font-size: 21px; font-weight: 900;
+      color: var(--dark); letter-spacing: -0.02em; flex-shrink: 0;
+      display: flex; align-items: center; gap: 2px;
+    }
+    .nav-logo .dot { color: var(--accent); }
+    .nav-links {
+      display: flex; align-items: center; gap: 2px; margin: 0 auto;
+    }
+    .nav-link {
+      font-family: var(--montserrat); font-size: 13px; font-weight: 600;
+      color: #334155; padding: 9px 16px; border-radius: 999px;
+      border: 1px solid transparent; background: transparent;
+      transition: all 0.22s; white-space: nowrap; cursor: pointer;
+    }
+    .nav-link:hover { border-color: var(--border-blue); background: rgba(14,165,233,0.07); color: var(--primary-dark); }
+    .nav-link.active { background: rgba(14,165,233,0.12); border-color: var(--border-blue); color: var(--primary-dark); font-weight: 700; }
+    .nav-cta {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #84CC16, #65A30D);
+      color: #fff; border: none; border-radius: 50px;
+      padding: 11px 26px; font-family: var(--montserrat); font-weight: 700; font-size: 14px;
+      cursor: pointer; white-space: nowrap; transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 18px rgba(132,204,22,0.38); letter-spacing: 0.01em;
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(132,204,22,0.5); }
+    section[id] { scroll-margin-top: 86px; }
+
+    /* ════════════════════════════════
+       HERO SECTION
+    ════════════════════════════════ */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 130px 24px 80px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 50%, #F0FDF4 100%);
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(14,165,233,0.6) 35%, rgba(132,204,22,0.55) 65%, transparent);
+      z-index: 2; pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.11) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.11) 1px, transparent 1px);
+      background-size: 64px 64px;
+      animation: gridMove 18s linear infinite;
+    }
+    .hero-aurora { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .hero-aurora-a {
+      position: absolute; border-radius: 50%; filter: blur(72px);
+      width: 68vw; height: 58vh; top: -18vh; left: -8vw;
+      background: radial-gradient(ellipse at 40% 40%, rgba(14,165,233,0.2) 0%, transparent 65%);
+      animation: auroraA 26s ease-in-out infinite;
+    }
+    .hero-aurora-b {
+      position: absolute; border-radius: 50%; filter: blur(72px);
+      width: 52vw; height: 52vh; bottom: -14vh; right: -6vw;
+      background: radial-gradient(ellipse at 60% 60%, rgba(132,204,22,0.15) 0%, transparent 65%);
+      animation: auroraB 19s ease-in-out infinite;
+    }
+    .hero-aurora-c {
+      position: absolute; border-radius: 50%; filter: blur(62px);
+      width: 38vw; height: 36vh; top: 24vh; right: 14vw;
+      background: radial-gradient(ellipse at 50% 50%, rgba(56,189,248,0.11) 0%, transparent 60%);
+      animation: auroraA 32s ease-in-out infinite reverse;
+    }
+    .hero > *:not(.hero-grid):not(.hero-aurora) { position: relative; z-index: 1; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.32);
+      border-radius: 50px; padding: 11px 28px;
+      font-size: 14px; font-weight: 700; color: var(--primary-dark);
+      margin-bottom: 40px; letter-spacing: 0.04em;
+    }
+    .hero-badge .dot {
+      width: 9px; height: 9px; background: var(--accent); border-radius: 50%;
+      animation: pulseDot 2s infinite; flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(132,204,22,0.28);
+    }
+    .hero h1 {
+      font-family: var(--unbounded); font-size: clamp(42px, 6.5vw, 80px);
+      font-weight: 900; line-height: 1.08; max-width: 900px;
+      margin-bottom: 36px;
+      background: linear-gradient(135deg, #0C1A2E 0%, #0EA5E9 28%, #84CC16 52%, #0EA5E9 76%, #0C1A2E 100%);
+      background-size: 400% 400%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+    .hero-sub {
+      font-size: clamp(18px, 2.2vw, 24px); color: #334155;
+      max-width: 640px; margin-bottom: 48px;
+      font-weight: 500; line-height: 1.7;
+    }
+
+    .hero-arrow-wrap { margin-bottom: 44px; }
+    .hero-down-arrow {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 92px; height: 92px; border-radius: 50%;
+      border: 1.5px solid rgba(132,204,22,0.58);
+      background: radial-gradient(circle at 50% 25%, rgba(132,204,22,0.34), rgba(240,249,255,0.2));
+      animation: arrowPulse 2.2s ease-in-out infinite;
+      cursor: pointer; transition: transform 0.25s;
+    }
+    .hero-down-arrow:hover { transform: scale(1.08); }
+    .hero-arrow-icon {
+      font-size: 42px; color: var(--accent);
+      text-shadow: 0 0 16px rgba(132,204,22,0.7);
+      animation: arrowBounce 1.2s ease-in-out infinite;
+      display: block; line-height: 1;
+    }
+
+    .hero-cta-single { margin-bottom: 0; }
+
+    /* ════════════════════════════════
+       VIDEO SECTION
+    ════════════════════════════════ */
+    .vsl-section {
+      position: relative; z-index: 1;
+      padding: 52px 24px 0;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 50%, #F0FDF4 100%);
+    }
+    .vsl-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px;
+      animation: gridMove 18s linear infinite;
+    }
+    .vsl-section > * { position: relative; z-index: 1; }
+
+    .vsl-outer-glow {
+      position: relative; max-width: 1080px; margin: 0 auto;
+      padding: 4px; border-radius: 28px;
+      background: linear-gradient(135deg, #0EA5E9, #38BDF8, #84CC16, #65A30D, #0EA5E9);
+      background-size: 400% 400%;
+      animation: borderGrad 5s ease infinite;
+      box-shadow:
+        0 0 80px rgba(14,165,233,0.55),
+        0 0 150px rgba(14,165,233,0.22),
+        0 40px 80px rgba(0,0,0,0.12);
+    }
+    .vsl-inner {
+      position: relative; border-radius: 23px; overflow: hidden;
+      background: #0C1A2E;
+    }
+
+    /* Top bar */
+    .vsl-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; background: rgba(12,26,46,0.96);
+      border-bottom: 1px solid rgba(14,165,233,0.18);
+    }
+    .vsl-badge-left {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.3);
+      border-radius: 999px; padding: 8px 18px;
+      font-family: var(--montserrat); font-size: 12px; font-weight: 800;
+      color: #7DD3FC; letter-spacing: 0.09em; text-transform: uppercase;
+    }
+    .vsl-badge-left .vdot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulseDot 1.8s infinite; }
+    .vsl-badge-right {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #84CC16, #65A30D);
+      border-radius: 999px; padding: 9px 22px;
+      font-family: var(--montserrat); font-size: 12px; font-weight: 800;
+      color: #fff; letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; transition: transform 0.22s, box-shadow 0.22s;
+      box-shadow: 0 4px 16px rgba(132,204,22,0.42);
+    }
+    .vsl-badge-right:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(132,204,22,0.55); }
+
+    /* Video area */
+    .vsl-video-wrap {
+      position: relative; width: 100%; aspect-ratio: 16/9;
+      background: #0a1628; cursor: pointer; overflow: hidden;
+    }
+    /* Fake "screen" split like synkai */
+    .vsl-screen-left {
+      position: absolute; top: 0; left: 0; width: 70%; height: 100%;
+      background: linear-gradient(135deg, #0f2040, #162a4a);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px;
+    }
+    .vsl-screen-right {
+      position: absolute; top: 0; right: 0; width: 30%; height: 100%;
+      background: linear-gradient(160deg, #1a0a2e, #2d1050);
+      border-left: 1px solid rgba(14,165,233,0.2);
+      display: flex; align-items: flex-end; justify-content: center;
+      padding-bottom: 18px;
+    }
+    .vsl-brand-tag {
+      position: absolute; bottom: 16px; right: 16px;
+      font-family: var(--unbounded); font-size: 11px; font-weight: 700;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.08em;
+    }
+    .vsl-subtitle-top {
+      color: rgba(255,255,255,0.72); font-size: clamp(12px,1.4vw,16px); font-weight: 500;
+      text-align: center; padding: 0 32px; line-height: 1.5;
+    }
+    .vsl-subtitle-bold {
+      font-family: var(--unbounded); font-size: clamp(13px,1.6vw,18px); font-weight: 800;
+      color: #fff; text-align: center; padding: 0 24px;
+    }
+    .vsl-caption {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      font-family: var(--montserrat); font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.55); white-space: nowrap;
+    }
+
+    /* Play / sound overlay */
+    .vsl-play-overlay {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 18px; z-index: 10;
+      background: rgba(12,26,46,0.22);
+    }
+    .vsl-play-btn {
+      width: 110px; height: 110px;
+      background: linear-gradient(135deg, rgba(14,165,233,0.28), rgba(2,132,199,0.45));
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      animation: playPulse 2.4s infinite; border: none; cursor: pointer; transition: transform 0.3s;
+    }
+    .vsl-play-btn:hover { transform: scale(1.1); }
+    .vsl-play-btn svg { width: 44px; height: 44px; fill: #fff; opacity: 0.85; }
+    .vsl-play-text {
+      font-family: var(--unbounded); font-size: 15px; font-weight: 700;
+      color: #fff; text-shadow: 0 2px 14px rgba(0,0,0,0.8); letter-spacing: 0.03em;
+    }
+    /* Progress bar */
+    .vsl-progress {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 5px;
+      background: rgba(255,255,255,0.12); z-index: 5;
+    }
+    .vsl-progress-inner { height: 100%; width: 0%; background: linear-gradient(90deg, #0EA5E9, #84CC16); transition: width 0.5s linear; }
+
+    /* Scan glow */
+    .vsl-scan {
+      position: absolute; inset: 0; pointer-events: none; z-index: 4;
+      background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.3) 45%, transparent 60%);
+      transform: translateX(-130%); animation: scanLine 5s ease-in-out infinite;
+    }
+
+    /* ════════════════════════════════
+       COUNTDOWN SECTION
+    ════════════════════════════════ */
+    .countdown-section {
+      position: relative; z-index: 1;
+      padding: 64px 24px 56px;
+      text-align: center;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 60%, #F0FDF4 100%);
+    }
+    .countdown-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.08) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .countdown-section > * { position: relative; z-index: 1; }
+
+    .countdown-label {
+      font-family: var(--unbounded); font-size: clamp(22px, 3vw, 36px);
+      font-weight: 800; color: var(--dark); margin-bottom: 28px;
+    }
+    .countdown-timer {
+      display: flex; align-items: flex-start; justify-content: center;
+      gap: 0; margin-bottom: 14px;
+    }
+    .cd-block { text-align: center; min-width: 88px; }
+    .cd-num {
+      font-family: var(--unbounded); font-size: clamp(44px, 7vw, 86px);
+      font-weight: 900; color: var(--primary-dark); line-height: 1;
+      display: block;
+    }
+    .cd-sep {
+      font-family: var(--unbounded); font-size: clamp(44px, 7vw, 86px);
+      font-weight: 900; color: var(--primary-dark); line-height: 1;
+      padding: 0 4px; align-self: flex-start; margin-top: 0;
+    }
+    .cd-unit {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted); margin-top: 8px;
+      display: block;
+    }
+    .countdown-cta { margin-top: 36px; }
+
+    /* ════════════════════════════════
+       STATS STRIP
+    ════════════════════════════════ */
+    .stats-strip {
+      position: relative; z-index: 1;
+      background: linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 60%, #F0FDF4 100%);
+      border-top: 1px solid rgba(14,165,233,0.18);
+      padding: 28px 24px;
+    }
+    .stats-strip-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: center; gap: 0;
+      flex-wrap: wrap;
+    }
+    .strip-item {
+      flex: 1; min-width: 180px; text-align: center;
+      padding: 12px 16px; position: relative;
+    }
+    .strip-item + .strip-item::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 1px; height: 48px; background: rgba(14,165,233,0.2);
+    }
+    .strip-num {
+      font-family: var(--unbounded); font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900; color: var(--primary); line-height: 1;
+      display: block;
+    }
+    .strip-num.green { color: var(--accent-dark); }
+    .strip-tag {
+      font-size: 10px; font-weight: 800; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted); margin-top: 6px;
+      display: block;
+    }
+
+    /* ════════════════════════════════
+       BIG STATS + INFO CARDS
+    ════════════════════════════════ */
+    .bigstats-section {
+      position: relative; z-index: 1;
+      padding: 80px 24px 0;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+    }
+    .bigstats-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .bigstats-section > * { position: relative; z-index: 1; }
+
+    .bigstats-row {
+      max-width: 900px; margin: 0 auto 72px;
+      display: flex; align-items: flex-start; justify-content: center; gap: 0;
+    }
+    .bigstat-item {
+      flex: 1; text-align: center; padding: 12px 24px; position: relative;
+    }
+    .bigstat-item + .bigstat-item::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 1px; height: 56px; background: rgba(14,165,233,0.22);
+    }
+    .bigstat-num {
+      font-family: var(--unbounded); font-size: clamp(36px, 5.5vw, 64px);
+      font-weight: 900; color: var(--primary); line-height: 1; display: block;
+    }
+    .bigstat-num.green { color: var(--accent-dark); }
+    .bigstat-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--muted); margin-top: 8px; display: block;
+    }
+
+    .infocards-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    }
+    .infocard {
+      background: rgba(14,165,233,0.07);
+      border: 1px solid rgba(14,165,233,0.22);
+      border-radius: 18px; padding: 26px 24px;
+      transition: all 0.28s;
+    }
+    .infocard:hover {
+      border-color: rgba(14,165,233,0.48);
+      background: rgba(14,165,233,0.12);
+      transform: translateY(-4px);
+      box-shadow: 0 14px 36px rgba(14,165,233,0.14);
+    }
+    .infocard h3 {
+      font-family: var(--montserrat); font-size: 16px; font-weight: 800;
+      color: var(--primary-dark); margin-bottom: 10px;
+    }
+    .infocard p {
+      font-size: 14px; color: #334155; line-height: 1.65;
+    }
+
+    .infocards-cta {
+      text-align: center; padding: 60px 24px 80px;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+      position: relative; z-index: 1;
+    }
+    .infocards-cta::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.07) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .infocards-cta > * { position: relative; z-index: 1; }
+
+    /* ════════════════════════════════
+       MIÉRT MOST SECTION
+    ════════════════════════════════ */
+    .miert-section {
+      position: relative; z-index: 1;
+      padding: 100px 24px 96px;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+      text-align: center;
+    }
+    .miert-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .miert-section > * { position: relative; z-index: 1; }
+
+    .miert-label {
+      display: block; font-size: 13px; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--primary); margin-bottom: 20px;
+    }
+    .miert-title {
+      font-family: var(--unbounded); font-size: clamp(32px, 5vw, 58px);
+      font-weight: 900; line-height: 1.12; max-width: 800px;
+      margin: 0 auto 22px;
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 40%, #84CC16 70%, #65A30D 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+    .miert-sub {
+      font-size: clamp(16px, 1.8vw, 20px); color: #334155;
+      max-width: 600px; margin: 0 auto 60px; line-height: 1.7; font-weight: 500;
+    }
+
+    .numcards-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .numcard {
+      background: #FFFFFF;
+      border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 20px; padding: 32px 28px 28px;
+      text-align: left;
+      box-shadow: 0 4px 22px rgba(14,165,233,0.08);
+      transition: all 0.3s;
+    }
+    .numcard:hover {
+      transform: translateY(-6px);
+      border-color: rgba(14,165,233,0.4);
+      box-shadow: 0 18px 50px rgba(14,165,233,0.16);
+    }
+    .numcard-num {
+      font-family: var(--unbounded); font-size: 48px; font-weight: 900;
+      line-height: 1; margin-bottom: 16px; display: block;
+      background: linear-gradient(135deg, #0EA5E9, #84CC16);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .numcard h3 {
+      font-family: var(--montserrat); font-size: 17px; font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #0284C7, #65A30D);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .numcard p {
+      font-size: 14px; color: #475569; line-height: 1.7;
+    }
+
+    /* ════════════════════════════════
+       KEYWORD SWITCH SECTION
+    ════════════════════════════════ */
+    .kw-section {
+      position: relative; z-index: 1;
+      padding: 100px 24px 96px;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+      text-align: center;
+    }
+    .kw-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .kw-section > * { position: relative; z-index: 1; }
+    .kw-label {
+      display: block; font-size: 13px; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--primary); margin-bottom: 20px;
+    }
+    .kw-title {
+      font-family: var(--unbounded); font-size: clamp(28px, 4.4vw, 54px);
+      font-weight: 900; line-height: 1.12; max-width: 820px;
+      margin: 0 auto 18px;
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 45%, #84CC16 75%, #65A30D 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+    .kw-sub {
+      font-size: clamp(15px, 1.7vw, 18px); color: #334155;
+      max-width: 560px; margin: 0 auto 48px; line-height: 1.7; font-weight: 500;
+    }
+    .kw-tabs {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; margin-bottom: 28px;
+    }
+    .kw-tab {
+      border: 1.5px solid rgba(14,165,233,0.32);
+      background: rgba(14,165,233,0.07); color: #334155;
+      border-radius: 999px; padding: 11px 22px;
+      font-family: var(--montserrat); font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: all 0.25s; white-space: nowrap;
+    }
+    .kw-tab:hover { border-color: rgba(14,165,233,0.6); color: var(--primary-dark); }
+    .kw-tab.active {
+      background: linear-gradient(135deg, rgba(14,165,233,0.22), rgba(132,204,22,0.18));
+      border-color: rgba(14,165,233,0.7); color: var(--dark); font-weight: 800;
+      box-shadow: 0 6px 20px rgba(14,165,233,0.2);
+    }
+    .kw-panel-wrap {
+      max-width: 1100px; margin: 0 auto;
+      background: #fff; border: 1px solid rgba(14,165,233,0.2);
+      border-radius: 24px; padding: 32px;
+      box-shadow: 0 16px 48px rgba(14,165,233,0.1);
+    }
+    .kw-panel { display: none; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
+    .kw-panel.active { display: grid; animation: kwFadeIn 0.3s ease; }
+    @keyframes kwFadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .kw-main {
+      background: rgba(14,165,233,0.05); border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 16px; padding: 28px 26px; text-align: left;
+    }
+    .kw-main h3 {
+      font-family: var(--montserrat); font-size: clamp(20px, 2.4vw, 28px);
+      font-weight: 900; color: var(--dark); line-height: 1.25; margin-bottom: 14px;
+    }
+    .kw-main p { color: #475569; font-size: 15px; line-height: 1.7; margin-bottom: 20px; }
+    .kw-list { list-style: none; display: grid; gap: 9px; }
+    .kw-list li { font-size: 14px; color: #334155; display: flex; align-items: flex-start; gap: 8px; }
+    .kw-list li::before { content: '✓'; color: var(--accent-dark); font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+    .kw-side { display: flex; flex-direction: column; gap: 14px; }
+    .kw-stat {
+      background: rgba(14,165,233,0.07); border: 1px solid rgba(14,165,233,0.22);
+      border-radius: 14px; padding: 18px 20px; text-align: left;
+      transition: all 0.25s;
+    }
+    .kw-stat:hover { background: rgba(14,165,233,0.12); border-color: rgba(14,165,233,0.4); }
+    .kw-stat strong {
+      display: block; font-family: var(--unbounded); font-size: 20px;
+      font-weight: 900; color: var(--primary-dark); margin-bottom: 4px;
+    }
+    .kw-stat span { font-size: 13px; color: #475569; line-height: 1.5; }
+
+    /* ════════════════════════════════
+       BULLETS SECTION (kép + lista)
+    ════════════════════════════════ */
+    .bullets-section {
+      position: relative; z-index: 1;
+      padding: 100px 24px;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+    }
+    .bullets-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .bullets-section > * { position: relative; z-index: 1; }
+
+    .bullets-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center;
+    }
+
+    /* Left: image */
+    .bullets-img-wrap { position: relative; }
+    .bullets-img {
+      width: 100%; border-radius: 24px;
+      border: 1px solid rgba(14,165,233,0.22);
+      box-shadow: 0 32px 80px rgba(14,165,233,0.18);
+      display: block; object-fit: cover;
+      aspect-ratio: 4/3;
+      animation: imgFloat 7s ease-in-out infinite;
+    }
+    @keyframes imgFloat {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-10px); }
+    }
+    /* Image placeholder (ha nincs kép) */
+    .bullets-img-placeholder {
+      width: 100%; aspect-ratio: 4/3; border-radius: 24px;
+      border: 1px solid rgba(14,165,233,0.25);
+      box-shadow: 0 32px 80px rgba(14,165,233,0.18);
+      background: linear-gradient(135deg, #DBEAFE 0%, #E0F2FE 50%, #DCFCE7 100%);
+      display: flex; align-items: center; justify-content: center;
+      animation: imgFloat 7s ease-in-out infinite;
+      overflow: hidden; position: relative;
+    }
+    .bullets-img-placeholder::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(132,204,22,0.1));
+    }
+    .bullets-img-inner {
+      text-align: center; position: relative; z-index: 1;
+    }
+    .bullets-img-icon { font-size: 72px; display: block; margin-bottom: 12px; opacity: 0.5; }
+    .bullets-img-text {
+      font-family: var(--unbounded); font-size: 14px; font-weight: 700;
+      color: var(--primary-dark); opacity: 0.7;
+    }
+
+    /* Subtle border glow */
+    .bullets-img-wrap::after {
+      content: ''; position: absolute; inset: -2px; border-radius: 26px;
+      background: linear-gradient(135deg, rgba(14,165,233,0.3), rgba(132,204,22,0.25), rgba(14,165,233,0.3));
+      background-size: 300% 300%; animation: borderGrad 6s ease infinite;
+      z-index: -1; pointer-events: none;
+    }
+
+    /* Right: content */
+    .bullets-content { display: flex; flex-direction: column; gap: 0; }
+    .bullets-label {
+      font-size: 13px; font-weight: 800; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 16px;
+    }
+    .bullets-title {
+      font-family: var(--unbounded); font-size: clamp(36px, 4.8vw, 58px);
+      font-weight: 900; line-height: 1.1; margin-bottom: 36px;
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 45%, #84CC16 80%, #65A30D 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+
+    .bullet-list { display: flex; flex-direction: column; gap: 14px; }
+    .bullet-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      background: #fff; border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 16px; padding: 20px 22px;
+      box-shadow: 0 3px 14px rgba(14,165,233,0.07);
+      transition: all 0.28s;
+    }
+    .bullet-item:hover {
+      border-color: rgba(14,165,233,0.42);
+      transform: translateX(6px);
+      box-shadow: 0 10px 30px rgba(14,165,233,0.14);
+    }
+    .bullet-check {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: linear-gradient(135deg, #0EA5E9, #84CC16);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: #fff; font-weight: 900; margin-top: 1px;
+    }
+    .bullet-text strong {
+      display: block; font-size: 15px; font-weight: 800;
+      color: var(--dark); margin-bottom: 4px;
+    }
+    .bullet-text span { font-size: 13px; color: #475569; line-height: 1.6; }
+
+    /* ════════════════════════════════
+       STEPS SECTION
+    ════════════════════════════════ */
+    .steps-section {
+      position: relative; z-index: 1;
+      padding: 100px 24px 96px;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+      text-align: center;
+    }
+    .steps-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .steps-section > * { position: relative; z-index: 1; }
+
+    .steps-title {
+      font-family: var(--unbounded); font-size: clamp(32px, 4.8vw, 58px);
+      font-weight: 900; line-height: 1.12; max-width: 780px; margin: 0 auto 20px;
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 45%, #84CC16 75%, #65A30D 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+    .steps-sub {
+      font-size: clamp(16px, 1.8vw, 19px); color: #334155;
+      max-width: 520px; margin: 0 auto 60px; line-height: 1.7; font-weight: 500;
+    }
+
+    .steps-grid {
+      max-width: 1100px; margin: 0 auto 52px;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+      position: relative;
+    }
+    /* Connecting line */
+    .steps-grid::before {
+      content: ''; position: absolute;
+      top: 52px; left: calc(16.6% + 20px); right: calc(16.6% + 20px);
+      height: 2px;
+      background: linear-gradient(90deg, #0EA5E9, #84CC16);
+      z-index: 0;
+      animation: lineGlow 2.5s ease-in-out infinite;
+    }
+    @keyframes lineGlow {
+      0%,100% { opacity: 0.6; box-shadow: none; }
+      50%     { opacity: 1; box-shadow: 0 0 12px rgba(14,165,233,0.5); }
+    }
+
+    .step-card {
+      background: #fff; border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 20px; padding: 36px 28px 32px;
+      text-align: center; position: relative; z-index: 1;
+      box-shadow: 0 4px 22px rgba(14,165,233,0.08);
+      transition: all 0.32s;
+    }
+    .step-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(14,165,233,0.42);
+      box-shadow: 0 22px 56px rgba(14,165,233,0.18);
+    }
+    .step-num {
+      width: 62px; height: 62px; border-radius: 50%;
+      background: linear-gradient(135deg, #0EA5E9, #84CC16);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 22px;
+      font-family: var(--unbounded); font-size: 24px; font-weight: 900; color: #fff;
+      box-shadow: 0 8px 24px rgba(14,165,233,0.4);
+      animation: stepPulse 3s ease-in-out infinite;
+    }
+    .step-card:nth-child(2) .step-num { animation-delay: 0.6s; }
+    .step-card:nth-child(3) .step-num { animation-delay: 1.2s; }
+    @keyframes stepPulse {
+      0%,100% { box-shadow: 0 8px 24px rgba(14,165,233,0.4); }
+      50%     { box-shadow: 0 12px 36px rgba(14,165,233,0.65), 0 0 0 8px rgba(14,165,233,0.1); }
+    }
+    .step-card h3 {
+      font-family: var(--montserrat); font-size: 17px; font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #0284C7, #65A30D);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .step-card p { font-size: 14px; color: #475569; line-height: 1.7; }
+
+    .steps-cta { display: flex; justify-content: center; }
+
+    /* ════════════════════════════════
+       RESULTS / PORTFOLIO SECTION
+    ════════════════════════════════ */
+    .results-section {
+      position: relative; z-index: 1;
+      padding: 100px 24px 96px;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+      text-align: center;
+    }
+    .results-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .results-section > * { position: relative; z-index: 1; }
+
+    .results-label {
+      display: block; font-size: 13px; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--primary); margin-bottom: 18px;
+    }
+    .results-title {
+      font-family: var(--unbounded); font-size: clamp(34px, 5vw, 60px);
+      font-weight: 900; line-height: 1.1; max-width: 700px; margin: 0 auto 18px;
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 45%, #84CC16 75%, #65A30D 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+    .results-sub {
+      font-size: clamp(15px, 1.7vw, 18px); color: #334155;
+      max-width: 540px; margin: 0 auto 60px; line-height: 1.7; font-weight: 500;
+    }
+
+    .results-grid {
+      max-width: 1100px; margin: 0 auto 52px;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+    }
+    .result-card {
+      background: #fff; border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 6px 28px rgba(14,165,233,0.1);
+      transition: all 0.32s; text-align: left;
+      display: flex; flex-direction: column;
+    }
+    .result-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(14,165,233,0.4);
+      box-shadow: 0 24px 60px rgba(14,165,233,0.2);
+    }
+
+    /* Image area */
+    .result-img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;
+    }
+    .result-img-placeholder {
+      width: 100%; aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; position: relative; overflow: hidden;
+    }
+    .result-img-placeholder.bg1 { background: linear-gradient(135deg, #DBEAFE, #BAE6FD); }
+    .result-img-placeholder.bg2 { background: linear-gradient(135deg, #DCFCE7, #BBF7D0); }
+    .result-img-placeholder.bg3 { background: linear-gradient(135deg, #EDE9FE, #C7D2FE); }
+
+    /* Card body */
+    .result-body {
+      padding: 24px 22px 26px; flex: 1; display: flex; flex-direction: column;
+    }
+    .result-amount {
+      font-family: var(--unbounded); font-size: clamp(28px, 3.2vw, 38px);
+      font-weight: 900; color: var(--primary); line-height: 1; margin-bottom: 6px;
+    }
+    .result-amount.green { color: var(--accent-dark); }
+    .result-who {
+      font-size: 14px; font-weight: 800; margin-bottom: 12px;
+      background: linear-gradient(135deg, #0284C7, #65A30D);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .result-desc { font-size: 13px; color: #475569; line-height: 1.65; flex: 1; }
+
+    /* Bottom accent line */
+    .result-card::after {
+      content: ''; display: block; height: 3px;
+      background: linear-gradient(90deg, #0EA5E9, #84CC16);
+    }
+
+    .results-cta {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    }
+
+    /* ════════════════════════════════
+       TESTIMONIALS MARQUEE
+    ════════════════════════════════ */
+    .reviews-section {
+      position: relative; z-index: 1;
+      padding: 100px 0 96px;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+      text-align: center; overflow: hidden;
+    }
+    .reviews-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .reviews-section > * { position: relative; z-index: 1; }
+
+    .reviews-label {
+      display: block; font-size: 13px; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--primary); margin-bottom: 18px;
+    }
+    .reviews-title {
+      font-family: var(--unbounded); font-size: clamp(34px, 5vw, 62px);
+      font-weight: 900; line-height: 1.1; max-width: 700px; margin: 0 auto 56px;
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 45%, #84CC16 75%, #65A30D 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+
+    /* Marquee track */
+    .marquee-row { overflow: hidden; width: 100%; margin-bottom: 20px; }
+    .marquee-row:last-of-type { margin-bottom: 52px; }
+    .marquee-track {
+      display: flex; gap: 20px; width: max-content;
+      animation: marqueeLeft 32s linear infinite;
+    }
+    .marquee-track.reverse { animation: marqueeRight 38s linear infinite; }
+    .marquee-row:hover .marquee-track { animation-play-state: paused; }
+
+    @keyframes marqueeLeft  { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    @keyframes marqueeRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+
+    /* Fade edges */
+    .marquee-row {
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    }
+
+    /* Review card */
+    .review-card {
+      width: 320px; flex-shrink: 0;
+      background: #fff; border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 18px; padding: 22px 22px 18px;
+      text-align: left; box-shadow: 0 4px 18px rgba(14,165,233,0.08);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .review-card:hover {
+      border-color: rgba(14,165,233,0.4);
+      box-shadow: 0 12px 36px rgba(14,165,233,0.16);
+    }
+    .review-stars { color: #F59E0B; font-size: 14px; letter-spacing: 2px; margin-bottom: 10px; }
+    .review-text { font-size: 13px; color: #334155; line-height: 1.65; margin-bottom: 16px; font-style: italic; }
+    .review-author { display: flex; align-items: center; gap: 12px; }
+    .review-avatar {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #0EA5E9, #84CC16);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--unbounded); font-size: 13px; font-weight: 900; color: #fff;
+    }
+    .review-name { font-size: 13px; font-weight: 800; color: var(--dark); display: block; }
+    .review-role { font-size: 11px; color: #64748B; margin-top: 2px; display: block; }
+
+    .reviews-cta { display: flex; justify-content: center; }
+
+    /* ════════════════════════════════
+       CONTACT SECTION
+    ════════════════════════════════ */
+    .contact-section {
+      position: relative; z-index: 1;
+      padding: 100px 24px 96px;
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 55%, #F0FDF4 100%);
+    }
+    .contact-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.09) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .contact-section > * { position: relative; z-index: 1; }
+
+    .contact-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start;
+    }
+    .contact-label {
+      display: block; font-size: 13px; font-weight: 800; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 18px;
+    }
+    .contact-title {
+      font-family: var(--unbounded); font-size: clamp(28px, 3.8vw, 48px);
+      font-weight: 900; line-height: 1.15; margin-bottom: 20px;
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 45%, #84CC16 75%, #65A30D 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+    .contact-desc {
+      font-size: 15px; color: #334155; line-height: 1.7; margin-bottom: 36px;
+    }
+    .contact-guarantees { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+    .contact-guarantee {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 14px; font-weight: 700; color: #334155;
+    }
+    .cg-icon {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #0EA5E9, #84CC16);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: #fff;
+    }
+    .contact-alt {
+      padding: 16px 20px; border-radius: 14px;
+      border: 1px solid rgba(14,165,233,0.22); background: rgba(14,165,233,0.06);
+      font-size: 14px; color: #475569; line-height: 1.6;
+    }
+    .contact-alt a { color: var(--primary-dark); font-weight: 700; }
+    .contact-alt a:hover { text-decoration: underline; }
+
+    /* Form */
+    .contact-form-wrap {
+      background: #fff; border: 1px solid rgba(14,165,233,0.2);
+      border-radius: 24px; padding: 40px 36px;
+      box-shadow: 0 16px 52px rgba(14,165,233,0.12);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 13px; font-weight: 700; color: #334155;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; background: #F8FAFC;
+      border: 1.5px solid rgba(14,165,233,0.2); border-radius: 12px;
+      padding: 13px 16px; color: #0F172A;
+      font-family: var(--montserrat); font-size: 14px;
+      transition: all 0.25s; outline: none;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: #94A3B8; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary); background: #fff;
+      box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+    }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-select { cursor: pointer; }
+    .form-submit {
+      width: 100%; margin-top: 8px;
+      background: linear-gradient(125deg, #0EA5E9, #0284C7, #0EA5E9);
+      background-size: 220% 220%; color: #fff; border: none; border-radius: 14px;
+      padding: 18px; font-family: var(--montserrat); font-weight: 800; font-size: 16px;
+      cursor: pointer; animation: btnShift 8s ease infinite; transition: transform 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .form-submit::before {
+      content: ''; position: absolute; top: -30%; left: 0; width: 32%; height: 170%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+      animation: shine 3.4s ease-in-out infinite; pointer-events: none;
+    }
+    .form-submit:hover { transform: translateY(-2px); }
+    .form-note {
+      text-align: center; font-size: 12px; color: #94A3B8; margin-top: 12px;
+    }
+
+    /* ════════════════════════════════
+       FAQ SECTION
+    ════════════════════════════════ */
+    .faq-section {
+      position: relative; z-index: 1;
+      padding: 100px 24px 96px;
+      background: linear-gradient(160deg, #F0F9FF 0%, #EFF6FF 55%, #F0FDF4 100%);
+      text-align: center;
+    }
+    .faq-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.07) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+    .faq-section > * { position: relative; z-index: 1; }
+    .faq-label {
+      display: block; font-size: 13px; font-weight: 800; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 18px;
+    }
+    .faq-title {
+      font-family: var(--unbounded); font-size: clamp(28px, 4vw, 52px);
+      font-weight: 900; line-height: 1.12; max-width: 700px; margin: 0 auto 52px;
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 45%, #84CC16 75%, #65A30D 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: headlineColor 8s ease infinite;
+    }
+    .faq-list { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item {
+      background: #fff; border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 3px 14px rgba(14,165,233,0.07);
+      transition: border-color 0.25s;
+    }
+    .faq-item.open { border-color: rgba(14,165,233,0.42); }
+    .faq-q {
+      width: 100%; text-align: left; border: none; background: transparent;
+      padding: 20px 22px; display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; cursor: pointer;
+      font-family: var(--montserrat); font-size: 16px; font-weight: 800; color: var(--dark);
+    }
+    .faq-icon {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(14,165,233,0.15), rgba(132,204,22,0.12));
+      border: 1.5px solid rgba(14,165,233,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: var(--primary); font-weight: 300; line-height: 1;
+      transition: transform 0.25s, background 0.25s;
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      background: linear-gradient(135deg, #0EA5E9, #84CC16);
+      color: #fff; border-color: transparent;
+    }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.32s ease, padding 0.2s ease;
+    }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a-inner {
+      padding: 0 22px 20px;
+      font-size: 14px; color: #475569; line-height: 1.75; text-align: left;
+    }
+
+    /* ════════════════════════════════
+       FOOTER
+    ════════════════════════════════ */
+    footer {
+      position: relative; z-index: 1;
+      background: var(--dark);
+      border-top: 1px solid rgba(14,165,233,0.22);
+      padding: 56px 24px 32px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-family: var(--unbounded); font-size: 22px; font-weight: 900;
+      color: #fff; margin-bottom: 14px; display: block; letter-spacing: -0.02em;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.7; margin-bottom: 20px; }
+    .footer-contact-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: rgba(255,255,255,0.65); margin-bottom: 8px;
+    }
+    .footer-contact-item a { color: rgba(255,255,255,0.65); transition: color 0.2s; }
+    .footer-contact-item a:hover { color: var(--accent); }
+    .fci-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+    .footer-col h4 {
+      font-family: var(--montserrat); font-size: 12px; font-weight: 800;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); margin-bottom: 18px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a {
+      font-size: 14px; color: rgba(255,255,255,0.62); transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--primary-light); }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); }
+    .footer-copy a { color: rgba(255,255,255,0.5); }
+    .footer-copy a:hover { color: var(--accent); }
+    .footer-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,204,22,0.12); border: 1px solid rgba(132,204,22,0.3);
+      border-radius: 999px; padding: 6px 14px;
+      font-size: 11px; font-weight: 700; color: #A3E635; letter-spacing: 0.04em;
+    }
+    .fb-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulseDot 2s infinite; }
+
+    /* ════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════ */
+    @media (max-width: 768px) {
+      nav { padding: 0 18px; }
+      .nav-links { display: none; }
+      .hero { padding: 90px 18px 48px; }
+      .hero h1 { font-size: clamp(26px, 7vw, 44px); }
+      .vsl-section { padding: 36px 14px 0; }
+      .cd-block { min-width: 64px; }
+      .cd-num { font-size: clamp(36px, 9vw, 60px); }
+      .cd-sep { font-size: clamp(36px, 9vw, 60px); }
+      .strip-item { min-width: 120px; }
+      .infocards-grid { grid-template-columns: 1fr; }
+      .bigstats-row { flex-wrap: wrap; }
+      .bigstat-item { min-width: 140px; }
+      .numcards-grid { grid-template-columns: 1fr; }
+      .miert-section { padding: 72px 18px 72px; }
+      .kw-panel { grid-template-columns: 1fr; }
+      .kw-section { padding: 72px 18px 72px; }
+      .kw-panel-wrap { padding: 20px; }
+      .bullets-inner { grid-template-columns: 1fr; gap: 36px; }
+      .bullets-section { padding: 72px 18px; }
+      .bullets-title { font-size: clamp(32px, 8vw, 48px); }
+      .steps-grid { grid-template-columns: 1fr; }
+      .steps-grid::before { display: none; }
+      .steps-section { padding: 72px 18px; }
+      .results-grid { grid-template-columns: 1fr; }
+      .results-section { padding: 72px 18px; }
+      .contact-inner { grid-template-columns: 1fr; gap: 36px; }
+      .contact-section { padding: 72px 18px; }
+      .form-row { grid-template-columns: 1fr; }
+      .contact-form-wrap { padding: 24px 20px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .faq-section { padding: 72px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════
+       NAV
+  ══════════════════════════════ -->
+  <nav>
+    <a href="#" class="nav-logo">NEZ<span class="dot">OR</span></a>
+    <div class="nav-links">
+      <a href="#kezdolap"  class="nav-link active">Kezdőlap</a>
+      <a href="#video"     class="nav-link">Videó</a>
+      <a href="#elonyok"   class="nav-link">Előnyök</a>
+      <a href="#folyamat"  class="nav-link">Folyamat</a>
+      <a href="#velemenyek"class="nav-link">Vélemények</a>
+      <a href="#kapcsolat" class="nav-link">Kapcsolat</a>
+    </div>
+    <a href="#kapcsolat" class="nav-cta">Ingyenes konzultáció →</a>
+  </nav>
+
+  <!-- ══════════════════════════════
+       HERO
+  ══════════════════════════════ -->
+  <section class="hero" id="kezdolap">
+    <div class="hero-grid"></div>
+    <div class="hero-aurora">
+      <div class="hero-aurora-a"></div>
+      <div class="hero-aurora-b"></div>
+      <div class="hero-aurora-c"></div>
+    </div>
+
+    <div class="hero-badge">
+      <span class="dot"></span>
+      6+ év tapasztalat &nbsp;·&nbsp; Építőiparosoknak tervezve
+    </div>
+
+    <h1>Több megrendelő az internetről Garantáltan</h1>
+
+    <p class="hero-sub">
+      Igényeld a vállalkozásod (Kft, EV, KATA, BT) számára<br>
+      azt az online rendszert, amely folyamatosan hoz új ügyfeleket<br>
+      weboldallal, Google profillal és Facebook hirdetéssel.
+    </p>
+
+    <div class="hero-arrow-wrap">
+      <a href="#video" class="hero-down-arrow">
+        <span class="hero-arrow-icon">↓</span>
+      </a>
+    </div>
+
+    <div class="hero-cta-single">
+      <a href="#kapcsolat" class="btn-primary" style="font-size:20px; padding:24px 72px;">
+        Ingyenes konzultáció →
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       VIDEO SECTION
+  ══════════════════════════════ -->
+  <section class="vsl-section" id="video">
+    <div class="vsl-outer-glow">
+      <div class="vsl-inner">
+
+        <!-- Top bar -->
+        <div class="vsl-topbar">
+          <div class="vsl-badge-left">
+            <span class="vdot"></span>
+            Kiemelt videó
+          </div>
+          <div class="vsl-badge-right">
+            ▶ &nbsp; Nézd meg most
+          </div>
+        </div>
+
+        <!-- Video area -->
+        <div class="vsl-video-wrap" id="vslWrap">
+          <!-- Left: presentation area -->
+          <div class="vsl-screen-left">
+            <p class="vsl-subtitle-top">A következő néhány perc megmutatja,<br>miért veszítesz el megrendelőket naponta</p>
+            <p class="vsl-subtitle-bold">Ez lesz a napod legfontosabb 10 perce!</p>
+          </div>
+          <!-- Right: webcam -->
+          <div class="vsl-screen-right">
+            <div style="width:80%; aspect-ratio:9/12; background:linear-gradient(160deg,#1a3a5c,#0c2238); border-radius:12px; border:1px solid rgba(14,165,233,0.25);"></div>
+          </div>
+          <!-- Caption -->
+          <div class="vsl-caption">Kattints a hang bekapcsolásához</div>
+          <!-- Brand -->
+          <div class="vsl-brand-tag">nezor</div>
+          <!-- Scan line -->
+          <div class="vsl-scan"></div>
+          <!-- Play overlay -->
+          <div class="vsl-play-overlay" id="playOverlay">
+            <button class="vsl-play-btn" onclick="startVideo()">
+              <!-- Speaker / sound icon -->
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+              </svg>
+            </button>
+            <p class="vsl-play-text">Kattints a lejátszáshoz</p>
+          </div>
+          <!-- Progress bar -->
+          <div class="vsl-progress"><div class="vsl-progress-inner" id="vslProgress"></div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       COUNTDOWN
+  ══════════════════════════════ -->
+  <section class="countdown-section">
+    <p class="countdown-label">Ingyenes konzultációs helyek</p>
+    <div class="countdown-timer">
+      <div class="cd-block">
+        <span class="cd-num" id="cd-nap">03</span>
+        <span class="cd-unit">NAP</span>
+      </div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block">
+        <span class="cd-num" id="cd-ora">14</span>
+        <span class="cd-unit">ÓRA</span>
+      </div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block">
+        <span class="cd-num" id="cd-perc">28</span>
+        <span class="cd-unit">PERC</span>
+      </div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block">
+        <span class="cd-num" id="cd-mp">45</span>
+        <span class="cd-unit">MP</span>
+      </div>
+    </div>
+    <div class="countdown-cta">
+      <a href="#kapcsolat" class="btn-accent" style="font-size:20px; padding:24px 72px;">
+        Megnézem, nekem való-e →
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       STATS STRIP
+  ══════════════════════════════ -->
+
+  <!-- ══════════════════════════════
+       BIG STATS + INFO CARDS
+  ══════════════════════════════ -->
+  <section class="bigstats-section" id="elonyok">
+    <!-- Big 3 numbers -->
+    <div class="bigstats-row">
+      <div class="bigstat-item">
+        <span class="bigstat-num">81%</span>
+        <span class="bigstat-label">Online keres munkást</span>
+      </div>
+      <div class="bigstat-item">
+        <span class="bigstat-num green">INGYENES</span>
+        <span class="bigstat-label">Első konzultáció</span>
+      </div>
+      <div class="bigstat-item">
+        <span class="bigstat-num">4×</span>
+        <span class="bigstat-label">Több érdeklődő 10+ értékeléssel</span>
+      </div>
+    </div>
+
+    <!-- Info cards 3×2 -->
+    <div class="infocards-grid">
+      <div class="infocard">
+        <h3>Weboldal csomag</h3>
+        <p>Mobilbarát, gyors weboldal saját munkáid fotóival és elérhetőségeiddel. Ez az alap, amire minden más épül.</p>
+      </div>
+      <div class="infocard">
+        <h3>Google profil optimalizáció</h3>
+        <p>A program célja, hogy megjelenjél, amikor a környékeden keresik a szakmád. Értékelések, térkép, elérhetőség — mi beállítjuk és optimalizáljuk.</p>
+      </div>
+      <div class="infocard">
+        <h3>Facebook hirdetés</h3>
+        <p>A folyamatot úgy építjük fel, hogy a felújítást tervező helyi emberekhez jusson el a hirdetésed — ne várd az ügyfeleket, hanem te érd el őket.</p>
+      </div>
+      <div class="infocard">
+        <h3>Kiknek való?</h3>
+        <p>Elsősorban magyar építőipari vállalkozásoknak: burkoló, festő, tetőfedő, gépész, villanyszerelő — akik szeretnének rendszeres megrendelőket az internetről.</p>
+      </div>
+      <div class="infocard">
+        <h3>Mire terjed ki?</h3>
+        <p>Weboldal, Google SEO, Google Profil kezelés, Facebook és Instagram hirdetési kampányok, valamint közösségi média tréning telefonos posztoláshoz.</p>
+      </div>
+      <div class="infocard">
+        <h3>Miért most?</h3>
+        <p>Az online jelenlét nélküli vállalkozások egyre több megrendelést veszítenek el a versenytársaiknak. Érdemes minél előbb elindítani a folyamatot.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       MIÉRT MOST SECTION
+  ══════════════════════════════ -->
+  <section class="miert-section">
+    <span class="miert-label">Miért most?</span>
+    <h2 class="miert-title">Elszalasztanál egy komoly megrendelőt?</h2>
+    <p class="miert-sub">Sok építőipari vállalkozó nem tudja, miért csengenek ritkábban a telefonjai. Mi megmutatjuk, hogyan változtass ezen — és mi intézzük helyetted.</p>
+
+    <div class="numcards-grid">
+      <div class="numcard">
+        <span class="numcard-num">01.</span>
+        <h3>Weboldal nélkül nincs bizalom</h3>
+        <p>A mai megrendelők először Google-on keresnek. Ha nincs weboldalad, nem kerülsz a listájukra — még akkor sem, ha a munkád kiváló.</p>
+      </div>
+      <div class="numcard">
+        <span class="numcard-num">02.</span>
+        <h3>Google profil — ingyen forgalom</h3>
+        <p>Optimalizált Google profillal megjelensz a helyi keresésekben. Értékelések, térkép, elérhetőség — mindezt mi állítjuk be és kezeljük.</p>
+      </div>
+      <div class="numcard">
+        <span class="numcard-num">03.</span>
+        <h3>Egész Magyarország</h3>
+        <p>Baján alapítva, de online kiszolgálunk mindenkit országszerte. Személyes találkozó helyben is lehetséges, távolabb online videóhíváson.</p>
+      </div>
+      <div class="numcard">
+        <span class="numcard-num">04.</span>
+        <h3>Gyors eredmények</h3>
+        <p>Weboldal 2–3 hét alatt, Google profil 1–2 nap alatt, hirdetések 1 hét alatt élőben. Az egész rendszer 3–4 héten belül működik.</p>
+      </div>
+      <div class="numcard">
+        <span class="numcard-num">05.</span>
+        <h3>Értékelések = több hívás</h3>
+        <p>A 10+ értékeléssel rendelkező vállalkozások 4× annyi érdeklődőt kapnak. Mi segítünk felépíteni ezt a hitelességet gyorsan.</p>
+      </div>
+      <div class="numcard">
+        <span class="numcard-num">06.</span>
+        <h3>Mi intézzük helyetted</h3>
+        <p>Szakértőink végigkísérik a teljes folyamatot. Csak add meg az adataidat és a munkáid fotóit — a többi a mi feladatunk.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       KEYWORD SWITCH SECTION
+  ══════════════════════════════ -->
+  <section class="kw-section" id="folyamat">
+    <span class="kw-label">Gyors áttekintés</span>
+    <h2 class="kw-title">Melyik terület érdekel most a legjobban?</h2>
+    <p class="kw-sub">Válassz egy témát, és alatta azonnal látod a hozzá tartozó legfontosabb tudnivalókat.</p>
+
+    <div class="kw-tabs">
+      <button class="kw-tab active" onclick="switchTab(this,'kw-weboldal')">Weboldal</button>
+      <button class="kw-tab" onclick="switchTab(this,'kw-google')">Google profil</button>
+      <button class="kw-tab" onclick="switchTab(this,'kw-facebook')">Facebook hirdetés</button>
+      <button class="kw-tab" onclick="switchTab(this,'kw-kozossegi')">Közösségi média</button>
+      <button class="kw-tab" onclick="switchTab(this,'kw-arak')">Árak</button>
+    </div>
+
+    <div class="kw-panel-wrap">
+
+      <!-- Tab: Weboldal -->
+      <div class="kw-panel active" id="kw-weboldal">
+        <div class="kw-main">
+          <h3>Mobilbarát weboldal munkáid fotóival</h3>
+          <p>A weboldal az alap, amire minden más épül. Gyors, mobilbarát megjelenés, ami megmutatja a potenciális ügyfeleknek, hogy komoly szakemberrel van dolguk — nem csak egy ismerős ajánlásából.</p>
+          <ul class="kw-list">
+            <li>Saját domain és tárhely beállítása</li>
+            <li>Munkáid fotói és részletes leírásai</li>
+            <li>Kapcsolatfelvételi és ajánlatkérő űrlap</li>
+            <li>Keresőoptimalizálás (SEO) alapozás</li>
+          </ul>
+        </div>
+        <div class="kw-side">
+          <div class="kw-stat">
+            <strong>2–3 hét alatt</strong>
+            <span>elkészül a kész, élő weboldal a saját domaineden.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>Életre szóló alap</strong>
+            <span>Egyszer fizetsz az elkészítésért, utána a tied marad.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>Mobilon is tökéletes</strong>
+            <span>A megrendelők 72%-a mobilon böngész — ez alapkövetelmény.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Google profil -->
+      <div class="kw-panel" id="kw-google">
+        <div class="kw-main">
+          <h3>Jelenj meg, amikor téged keresnek</h3>
+          <p>Optimalizált Google profillal a helyi keresésekben az első helyek egyikén jelensz meg. Ez ingyenes, folyamatos forgalmat jelent — anélkül, hogy te bármit tennél érte.</p>
+          <ul class="kw-list">
+            <li>Google Térkép megjelenés beállítása</li>
+            <li>Értékelések kezelése és szerzése</li>
+            <li>Fotók, nyitvatartás, elérhetőség optimalizálása</li>
+            <li>Helyi SEO kulcsszavak beépítése</li>
+          </ul>
+        </div>
+        <div class="kw-side">
+          <div class="kw-stat">
+            <strong>1–2 nap alatt</strong>
+            <span>élőben van az optimalizált Google profil.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>Ingyenes forgalom</strong>
+            <span>Hirdetési költség nélkül is kaphat az oldalad látogatókat.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>72% súlyoz</strong>
+            <span>a Google értékeléseket ugyanannyira, mint a személyes ajánlást.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Facebook -->
+      <div class="kw-panel" id="kw-facebook">
+        <div class="kw-main">
+          <h3>Célzott hirdetések helyi megrendelőknek</h3>
+          <p>A 30–50 éves, felújítást tervező emberek Facebookon és Instagramon is aktívak. Mi beállítjuk és hetente optimalizáljuk a hirdetéseket — te csak a beérkező hívásokkal foglalkozz.</p>
+          <ul class="kw-list">
+            <li>Helyi, életkor és érdeklődés alapú célzás</li>
+            <li>Kreatív szöveg és képszerkesztés</li>
+            <li>Heti kampány optimalizálás</li>
+            <li>Havi teljesítmény riport</li>
+          </ul>
+        </div>
+        <div class="kw-side">
+          <div class="kw-stat">
+            <strong>2–3 hét</strong>
+            <span>alatt érdeklődők érkeznek az aktív kampányból.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>Mérhető ROI</strong>
+            <span>Pontosan látod, mennyibe kerül egy érdeklődő megszerzése.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>6+ év</strong>
+            <span>tapasztalat az építőipari Facebook hirdetések területén.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Közösségi média -->
+      <div class="kw-panel" id="kw-kozossegi">
+        <div class="kw-main">
+          <h3>Heti 20 perc — folyamatos jelenlét</h3>
+          <p>Megtanítjuk, hogyan készíts hetente 1–2 posztot a telefonoddal, 20 perc alatt. Folyamatos online jelenlét = folyamatos bizalom az ügyfelekben.</p>
+          <ul class="kw-list">
+            <li>Telefon fotózás és videózás tréning</li>
+            <li>Kész poszt sablonok és témák</li>
+            <li>Content naptár az egész évre</li>
+            <li>Hashtag és elérési stratégia</li>
+          </ul>
+        </div>
+        <div class="kw-side">
+          <div class="kw-stat">
+            <strong>20 perc/hét</strong>
+            <span>elegendő az aktív, hiteles közösségi média jelenléthez.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>Organikus elérés</strong>
+            <span>Rendszeres posztolással hirdetési költség nélkül is látnak téged.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>Bizalom épül</strong>
+            <span>Az emberek attól rendelnek, akit látnak és ismernek.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Árak -->
+      <div class="kw-panel" id="kw-arak">
+        <div class="kw-main">
+          <h3>Átlátható árazás, nincs meglepetés</h3>
+          <p>Az árak a projekt méretétől és komplexitásától függnek. Alap csomagnál 150–250 ezer Ft-tól, teljes komplex rendszernél 350–500 ezer Ft-tól indulunk — és nem kötünk hosszú szerződést.</p>
+          <ul class="kw-list">
+            <li>Egyszer fizetsz az elkészítésért</li>
+            <li>Nincs hosszú távú szerződés</li>
+            <li>Opcionális havi karbantartás és hirdetéskezelés</li>
+            <li>10% kedvezmény a NEZOR10 kóddal</li>
+          </ul>
+        </div>
+        <div class="kw-side">
+          <div class="kw-stat">
+            <strong>150–250k Ft</strong>
+            <span>alap csomag: weboldal + Google profil beállítás.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>350–500k Ft</strong>
+            <span>teljes rendszer: weboldal + Google + Facebook + tréning.</span>
+          </div>
+          <div class="kw-stat">
+            <strong>Ingyenes konzultáció</strong>
+            <span>Első lépésként díjmentes 30 perces felmérő beszélgetés.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       BULLETS SECTION
+  ══════════════════════════════ -->
+  <section class="bullets-section">
+    <div class="bullets-inner">
+
+      <!-- Left: image -->
+      <div class="bullets-img-wrap">
+        <div class="bullets-img-placeholder">
+          <div class="bullets-img-inner">
+            <span class="bullets-img-icon">🏗️</span>
+            <span class="bullets-img-text">NEZOR csapat</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: content -->
+      <div class="bullets-content">
+        <span class="bullets-label">Miért velünk?</span>
+        <h2 class="bullets-title">6+ Éves<br>Tapasztalat</h2>
+
+        <div class="bullet-list">
+          <div class="bullet-item">
+            <div class="bullet-check">✓</div>
+            <div class="bullet-text">
+              <strong>Már az első konzultáción tiszta kép</strong>
+              <span>Megmondjuk, pontosan mit érdemes csinálni — felesleges próbálgatás és ígérgetés nélkül.</span>
+            </div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-check">✓</div>
+            <div class="bullet-text">
+              <strong>Ingyenes első konzultáció, nulla kockázat</strong>
+              <span>Az első megbeszélésért nem számolunk fel díjat. Kockázatmentesen mérd fel, hogyan tudunk segíteni.</span>
+            </div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-check">✓</div>
+            <div class="bullet-text">
+              <strong>Teljes megvalósítás egyablakos rendszerben</strong>
+              <span>A weboldaladtól a Google profilon át a Facebook hirdetésekig mindenről mi gondoskodunk.</span>
+            </div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-check">✓</div>
+            <div class="bullet-text">
+              <strong>Valós eredmények, mérhető növekedés</strong>
+              <span>6+ év tapasztalattal bizonyítottan hozunk több érdeklődőt — az építőiparban is.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       STEPS SECTION
+  ══════════════════════════════ -->
+  <section class="steps-section" id="folyamat2">
+    <h2 class="steps-title">3 lépés és beindítod az online rendszered</h2>
+    <p class="steps-sub">Egyszerűbb mint gondolod. Nincs bonyolult technikai tudás, nincs felesleges várakozás.</p>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Töltsd ki az űrlapot</h3>
+        <p>Mindössze 2 perc. Pár alapkérdés a vállalkozásodról, hogy lássuk, pontosan hogyan tudunk a legjobban segíteni.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Szakértőnk felveszi a kapcsolatot</h3>
+        <p>24 órán belül hívunk. Átbeszéljük a részleteket, és közösen meghatározzuk a számodra legjobb stratégiát.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Beindítjuk a rendszert</h3>
+        <p>Elkészítjük a weboldalad, beállítjuk a Google profilt és elindítjuk a hirdetéseket. Te csak fogadod a hívásokat.</p>
+      </div>
+    </div>
+
+    <div class="steps-cta">
+      <a href="#kapcsolat" class="btn-primary" style="font-size:19px; padding:22px 68px;">
+        Kérem az ingyenes konzultációt →
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       RESULTS / PORTFOLIO SECTION
+  ══════════════════════════════ -->
+  <section class="results-section" id="velemenyek">
+    <span class="results-label">Eredmények</span>
+    <h2 class="results-title">Ők már több megrendelőt kapnak</h2>
+    <p class="results-sub">Valós ügyfeleinktől, valós eredmények. Ők sem hitték el, milyen gyorsan változott az online jelenlétük.</p>
+
+    <div class="results-grid">
+
+      <!-- Card 1: Estur -->
+      <div class="result-card">
+        <div class="result-img-placeholder bg1">🏗️</div>
+        <div class="result-body">
+          <span class="result-amount">3 nyelven</span>
+          <span class="result-who">Estur Épker Kft. — Baja</span>
+          <p class="result-desc">Háromnyelvű weboldal (magyar, angol, német), amely azóta is rendszeresen hoz külföldi ügyfeleket. Lengyel Olivér: "Megértették az ipar nyelvét és logikáját."</p>
+        </div>
+      </div>
+
+      <!-- Card 2: ZT Épületgépészet -->
+      <div class="result-card">
+        <div class="result-img-placeholder bg2">🔧</div>
+        <div class="result-body">
+          <span class="result-amount green">+15 értékelés</span>
+          <span class="result-who">ZT Épületgépészet — Kecskemét</span>
+          <p class="result-desc">Weboldal és szakmai blog, amely azóta is folyamatosan generál érdeklődőket. Tihanics Zalán: "Nem nyomultak rögtön eladással — meghallgattak, majd tanácsot adtak."</p>
+        </div>
+      </div>
+
+      <!-- Card 3: Hellinger -->
+      <div class="result-card">
+        <div class="result-img-placeholder bg3">🏠</div>
+        <div class="result-body">
+          <span class="result-amount">4× hívás</span>
+          <span class="result-who">Hellinger Kft. — Kivitelező</span>
+          <p class="result-desc">Folyamatosan fejlesztett weboldal, amelyre az ügyfél büszke. Hellinger Adrián: "Mások ellentétben folyamatosan gyűjtötték a visszajelzést és pontosan azt szállították, amit kértünk."</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="results-cta">
+      <a href="#kapcsolat" class="btn-primary" style="font-size:18px; padding:22px 56px;">
+        Szeretném én is elindítani →
+      </a>
+      <a href="#kapcsolat" class="btn-accent" style="font-size:18px; padding:22px 56px;">
+        Ingyenes konzultáció →
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       TESTIMONIALS
+  ══════════════════════════════ -->
+  <section class="reviews-section" id="velemenyek2">
+    <span class="reviews-label">Vélemények</span>
+    <h2 class="reviews-title">Mit mondanak ügyfeleink</h2>
+
+    <!-- Row 1 — left scroll -->
+    <div class="marquee-row">
+      <div class="marquee-track">
+        <!-- Original set -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Kezdetben szkeptikus voltam, de nem tolták rögtön az eladást. Meghallgattak, majd tanácsot adtak. A weboldal és a blog ma is hoz érdeklődőket."</p>
+          <div class="review-author"><div class="review-avatar">TZ</div><div><span class="review-name">Tihanics Zalán</span><span class="review-role">ZT Épületgépészet, Kecskemét</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Megértették az ipar nyelvét és logikáját. A háromnyelvű weboldal tökéletesen működik és hozott német ügyfeleket is."</p>
+          <div class="review-author"><div class="review-avatar">LO</div><div><span class="review-name">Lengyel Olivér</span><span class="review-role">Estur Épker Kft., Baja</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Mások ellentétben folyamatosan gyűjtötték a visszajelzést és pontosan azt szállították, amit kértünk. Büszkék vagyunk a weboldalra."</p>
+          <div class="review-author"><div class="review-avatar">HA</div><div><span class="review-name">Hellinger Adrián</span><span class="review-role">Hellinger Kft., kivitelező</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Két hónap alatt megduplázódott a heti hívások száma. Előtte alig csörgött a telefon — most van, hogy visszahívni se érek mindenkit."</p>
+          <div class="review-author"><div class="review-avatar">NK</div><div><span class="review-name">Nagy Károly</span><span class="review-role">Tetőfedő vállalkozó, Pécs</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"A Google-n elkezdtek megtalálni minket. Az első hónapban 3 új ügyfél jött kimondottan az internetes keresésből. Ezt nem gondoltam volna."</p>
+          <div class="review-author"><div class="review-avatar">SB</div><div><span class="review-name">Szabó Béla</span><span class="review-role">Festő-mázoló, Győr</span></div></div>
+        </div>
+        <!-- Duplicate for seamless loop -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Kezdetben szkeptikus voltam, de nem tolták rögtön az eladást. Meghallgattak, majd tanácsot adtak. A weboldal és a blog ma is hoz érdeklődőket."</p>
+          <div class="review-author"><div class="review-avatar">TZ</div><div><span class="review-name">Tihanics Zalán</span><span class="review-role">ZT Épületgépészet, Kecskemét</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Megértették az ipar nyelvét és logikáját. A háromnyelvű weboldal tökéletesen működik és hozott német ügyfeleket is."</p>
+          <div class="review-author"><div class="review-avatar">LO</div><div><span class="review-name">Lengyel Olivér</span><span class="review-role">Estur Épker Kft., Baja</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Mások ellentétben folyamatosan gyűjtötték a visszajelzést és pontosan azt szállították, amit kértünk. Büszkék vagyunk a weboldalra."</p>
+          <div class="review-author"><div class="review-avatar">HA</div><div><span class="review-name">Hellinger Adrián</span><span class="review-role">Hellinger Kft., kivitelező</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Két hónap alatt megduplázódott a heti hívások száma. Előtte alig csörgött a telefon — most van, hogy visszahívni se érek mindenkit."</p>
+          <div class="review-author"><div class="review-avatar">NK</div><div><span class="review-name">Nagy Károly</span><span class="review-role">Tetőfedő vállalkozó, Pécs</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"A Google-n elkezdtek megtalálni minket. Az első hónapban 3 új ügyfél jött kimondottan az internetes keresésből. Ezt nem gondoltam volna."</p>
+          <div class="review-author"><div class="review-avatar">SB</div><div><span class="review-name">Szabó Béla</span><span class="review-role">Festő-mázoló, Győr</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 — right scroll -->
+    <div class="marquee-row">
+      <div class="marquee-track reverse">
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Profi csapat, minden kérdésemre válaszoltak. A weboldal után a Facebook kampány is beindult — most már nem én keresem az ügyfeleket."</p>
+          <div class="review-author"><div class="review-avatar">KI</div><div><span class="review-name">Kovács István</span><span class="review-role">Villanyszerelő vállalkozó, Miskolc</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Féltem, hogy nagyon bonyolult lesz, de tényleg nem az volt. Egyszer csak jött az email, hogy a weboldal él. Megkönnyebbültem."</p>
+          <div class="review-author"><div class="review-avatar">MP</div><div><span class="review-name">Molnár Péter</span><span class="review-role">Burkoló mester, Debrecen</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Gyorsak, ügyfélbarátok, végig képben voltam. Most már van weboldalunk, Google profilunk és rendszeres hirdetéseink. Ajánlom mindenkinek."</p>
+          <div class="review-author"><div class="review-avatar">FD</div><div><span class="review-name">Fekete Dávid</span><span class="review-role">Gépész vállalkozó, Esztergom</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Nem gondoltam, hogy ilyen rövid idő alatt ilyen eredményt lehet elérni. 15 Google értékelésem van most — anno nulla volt."</p>
+          <div class="review-author"><div class="review-avatar">VT</div><div><span class="review-name">Varga Tamás</span><span class="review-role">Tetőfedő mester, Sopron</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Az ingyenes konzultáció után azonnal tudtam, hogy ezek az emberek értik, miről van szó. Nem kellett magyarázni, mi az építőipar."</p>
+          <div class="review-author"><div class="review-avatar">BG</div><div><span class="review-name">Balogh Gábor</span><span class="review-role">Általános kivitelező, Székesfehérvár</span></div></div>
+        </div>
+        <!-- Duplicate -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Profi csapat, minden kérdésemre válaszoltak. A weboldal után a Facebook kampány is beindult — most már nem én keresem az ügyfeleket."</p>
+          <div class="review-author"><div class="review-avatar">KI</div><div><span class="review-name">Kovács István</span><span class="review-role">Villanyszerelő vállalkozó, Miskolc</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Féltem, hogy nagyon bonyolult lesz, de tényleg nem az volt. Egyszer csak jött az email, hogy a weboldal él. Megkönnyebbültem."</p>
+          <div class="review-author"><div class="review-avatar">MP</div><div><span class="review-name">Molnár Péter</span><span class="review-role">Burkoló mester, Debrecen</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Gyorsak, ügyfélbarátok, végig képben voltam. Most már van weboldalunk, Google profilunk és rendszeres hirdetéseink. Ajánlom mindenkinek."</p>
+          <div class="review-author"><div class="review-avatar">FD</div><div><span class="review-name">Fekete Dávid</span><span class="review-role">Gépész vállalkozó, Esztergom</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Nem gondoltam, hogy ilyen rövid idő alatt ilyen eredményt lehet elérni. 15 Google értékelésem van most — anno nulla volt."</p>
+          <div class="review-author"><div class="review-avatar">VT</div><div><span class="review-name">Varga Tamás</span><span class="review-role">Tetőfedő mester, Sopron</span></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Az ingyenes konzultáció után azonnal tudtam, hogy ezek az emberek értik, miről van szó. Nem kellett magyarázni, mi az építőipar."</p>
+          <div class="review-author"><div class="review-avatar">BG</div><div><span class="review-name">Balogh Gábor</span><span class="review-role">Általános kivitelező, Székesfehérvár</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reviews-cta">
+      <a href="#kapcsolat" class="btn-primary" style="font-size:18px; padding:22px 64px;">
+        Ingyenes konzultáció →
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       CONTACT SECTION
+  ══════════════════════════════ -->
+  <section class="contact-section" id="kapcsolat">
+    <div class="contact-inner">
+      <!-- Left -->
+      <div class="contact-left">
+        <span class="contact-label">Kapcsolat</span>
+        <h2 class="contact-title">Kezdjük el együtt</h2>
+        <p class="contact-desc">Töltsd ki az űrlapot és 24 órán belül felvesszük veled a kapcsolatot. Az első konzultáció teljesen ingyenes és kötelezettségmentes.</p>
+        <div class="contact-guarantees">
+          <div class="contact-guarantee"><div class="cg-icon">✓</div>24 órán belüli visszajelzés</div>
+          <div class="contact-guarantee"><div class="cg-icon">✓</div>Kötelezettségmentes, ingyenes első konzultáció</div>
+          <div class="contact-guarantee"><div class="cg-icon">✓</div>Valódi szakmai párbeszéd, nem sales-call</div>
+          <div class="contact-guarantee"><div class="cg-icon">✓</div>10% kedvezmény a NEZOR10 kóddal</div>
+        </div>
+        <div class="contact-alt">
+          Inkább e-mailben kérdezne? Írj nekünk:<br>
+          <a href="mailto:info@nezor.hu">info@nezor.hu</a>
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="contact-form-wrap">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">Neved *</label>
+            <input class="form-input" type="text" placeholder="Pl. Kovács János" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Vállalkozás neve</label>
+            <input class="form-input" type="text" placeholder="Pl. KJ Épület Kft." />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">Telefonszám *</label>
+            <input class="form-input" type="tel" placeholder="+36 20 123 4567" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">E-mail cím *</label>
+            <input class="form-input" type="email" placeholder="pelda@email.hu" />
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Melyik szakmában dolgozol?</label>
+          <select class="form-select">
+            <option value="">Válassz szakmát...</option>
+            <option>Általános kivitelező</option>
+            <option>Burkoló</option>
+            <option>Festő-mázoló</option>
+            <option>Gépész / Épületgépész</option>
+            <option>Tetőfedő</option>
+            <option>Villanyszerelő</option>
+            <option>Ács / Faipari</option>
+            <option>Egyéb építőipari szakma</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Miben tudunk segíteni?</label>
+          <textarea class="form-textarea" placeholder="Pl. Nincs weboldalunk, ritkán keresnek minket online, szeretnék több megrendelőt..."></textarea>
+        </div>
+        <button class="form-submit">Küldöm az üzenetet →</button>
+        <p class="form-note">Az adataidat bizalmasan kezeljük, harmadik félnek nem adjuk át.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       FAQ SECTION
+  ══════════════════════════════ -->
+  <section class="faq-section" id="gyik">
+    <span class="faq-label">Gyakori kérdések</span>
+    <h2 class="faq-title">Amire a legtöbben kíváncsiak</h2>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Mennyibe kerül egy teljes csomag?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Az alapcsomag (weboldal + Google profil beállítás) 150–250 ezer Ft-tól indul. A teljes csomag (weboldal + Google + Facebook hirdetés + közösségi média tréning) 350–500 ezer Ft. Az árat a projekt mérete és komplexitása befolyásolja. A NEZOR10 kóddal 10% kedvezményt kapsz az első szolgáltatásra.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Mennyi idő alatt készül el a weboldal?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">A weboldal általában 2–3 hét alatt készül el. A Google profil 1–2 napon belül él. A Facebook hirdetések beállítása kb. 1 hét. Az egész rendszer tehát 3–4 héten belül teljesen működőképes.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Mi van, ha még kevés munkáról van fotóm?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Semmi gond — megtanítjuk, hogyan fotózz telefonnal professzionálisan. A tartalom folyamatosan bővíthető, ahogy újabb munkáid készülnek el. Nem kell egyszerre mindent megcsinálni.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Kell hosszú szerződést aláírnom?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Nem. Az elkészítésért egyszer fizetsz, utána a weboldal a tiéd. A havi karbantartás és hirdetéskezelés opcionális, és bármikor felmondható. Hosszú szerződés nincs, csak annyi kötöttség, amennyit te választasz.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Tényleg működik a Facebook hirdetés az építőiparban?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Igen — 6+ éves tapasztalattal igazoljuk, hogy az építőipari közönség jól reagál a megfelelően célzott hirdetésekre. A 30–50 éves, felújítást tervező háztulajdonosok aktívak Facebookon, és ha a hirdetés releváns, hívnak.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Baján vagytok — tudtok más városban is segíteni?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Igen, online az egész országot kiszolgáljuk. A weboldal, Google profil és hirdetéskezelés távolságtól függetlenül elvégezhető. Személyes találkozóra Baján és közelében van lehetőség, távolabb videóhíváson egyeztetünk.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       FOOTER
+  ══════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <!-- Brand -->
+        <div class="footer-brand">
+          <span class="footer-logo">NEZ<span>OR</span></span>
+          <p class="footer-desc">Online jelenlét megoldás magyar építőipari vállalkozásoknak. Weboldal, Google profil, Facebook hirdetés — komplett rendszer.</p>
+          <div class="footer-contact-item"><span class="fci-dot"></span><a href="mailto:info@nezor.hu">info@nezor.hu</a></div>
+          <div class="footer-contact-item"><span class="fci-dot"></span>Baja, Bács-Kiskun megye</div>
+          <div class="footer-contact-item"><span class="fci-dot"></span>Müller Dániel &amp; Jelencsity Miklós</div>
+        </div>
+        <!-- Nav -->
+        <div class="footer-col">
+          <h4>Navigáció</h4>
+          <ul class="footer-links">
+            <li><a href="#kezdolap">Kezdőlap</a></li>
+            <li><a href="#video">Videó</a></li>
+            <li><a href="#elonyok">Előnyök</a></li>
+            <li><a href="#folyamat">Folyamat</a></li>
+            <li><a href="#velemenyek">Vélemények</a></li>
+          </ul>
+        </div>
+        <!-- Services -->
+        <div class="footer-col">
+          <h4>Szolgáltatások</h4>
+          <ul class="footer-links">
+            <li><a href="#kapcsolat">Weboldal készítés</a></li>
+            <li><a href="#kapcsolat">Google profil</a></li>
+            <li><a href="#kapcsolat">Facebook hirdetés</a></li>
+            <li><a href="#kapcsolat">Közösségi média</a></li>
+            <li><a href="#gyik">Árak</a></li>
+          </ul>
+        </div>
+        <!-- Contact -->
+        <div class="footer-col">
+          <h4>Kapcsolat</h4>
+          <ul class="footer-links">
+            <li><a href="#kapcsolat">Ingyenes konzultáció</a></li>
+            <li><a href="mailto:info@nezor.hu">info@nezor.hu</a></li>
+            <li><a href="#gyik">Gyakori kérdések</a></li>
+            <li><a href="#kapcsolat">NEZOR10 kedvezmény</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 NEZOR Webfejlesztés — <a href="mailto:info@nezor.hu">info@nezor.hu</a> — Minden jog fenntartva.</p>
+        <div class="footer-badge"><span class="fb-dot"></span>Ingyenes konzultáció elérhető</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* Countdown – target: 3 days from now */
+    (function(){
+      const target = new Date(Date.now() + 3*24*3600*1000 + 14*3600*1000 + 28*60*1000 + 45*1000);
+      function tick(){
+        const diff = Math.max(0, target - Date.now());
+        const d = Math.floor(diff/86400000);
+        const h = Math.floor((diff%86400000)/3600000);
+        const m = Math.floor((diff%3600000)/60000);
+        const s = Math.floor((diff%60000)/1000);
+        document.getElementById('cd-nap').textContent  = String(d).padStart(2,'0');
+        document.getElementById('cd-ora').textContent  = String(h).padStart(2,'0');
+        document.getElementById('cd-perc').textContent = String(m).padStart(2,'0');
+        document.getElementById('cd-mp').textContent   = String(s).padStart(2,'0');
+      }
+      tick(); setInterval(tick, 1000);
+    })();
+
+    /* Nav active on scroll */
+    (function(){
+      const links = document.querySelectorAll('.nav-link');
+      const sections = document.querySelectorAll('section[id]');
+      window.addEventListener('scroll', ()=>{
+        let cur = '';
+        sections.forEach(s=>{ if(window.scrollY >= s.offsetTop - 120) cur = s.id; });
+        links.forEach(l=>{ l.classList.toggle('active', l.getAttribute('href')==='#'+cur); });
+      });
+    })();
+
+    /* Keyword tab switch */
+    function switchTab(btn, panelId) {
+      document.querySelectorAll('.kw-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.kw-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }
+
+    /* FAQ accordion */
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+
+    /* Fake video play */
+    function startVideo(){
+      document.getElementById('playOverlay').style.opacity = '0';
+      document.getElementById('playOverlay').style.pointerEvents = 'none';
+      let w = 0;
+      const bar = document.getElementById('vslProgress');
+      const iv = setInterval(()=>{ w = Math.min(100, w+0.08); bar.style.width=w+'%'; if(w>=100) clearInterval(iv); }, 100);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adatkezelési Tájékoztató — NEZOR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; overflow-x: hidden; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(155deg, #EFF6FF 0%, #F0F9FF 60%, #F0FDF4 100%);
+      color: #0F172A; font-size: 16px; line-height: 1.7;
+    }
+
+    @keyframes gridMove {
+      0%   { background-position: 0 0, 0 0; }
+      100% { background-position: 64px 64px, 64px 64px; }
+    }
+
+    .page-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.07) 1px, transparent 1px);
+      background-size: 64px 64px; animation: gridMove 18s linear infinite;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(240,249,255,0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(14,165,233,0.18);
+      padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 900; color: #0C1A2E; text-decoration: none; }
+    .logo span { color: #84CC16; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.28);
+      border-radius: 999px; padding: 9px 20px; font-size: 13px; font-weight: 700;
+      color: #0284C7; text-decoration: none; transition: all 0.22s;
+    }
+    .back-btn:hover { background: rgba(14,165,233,0.18); }
+
+    /* ── MAIN ── */
+    main {
+      position: relative; z-index: 1;
+      max-width: 860px; margin: 0 auto;
+      padding: 64px 32px 96px;
+    }
+
+    /* Hero */
+    .doc-hero { text-align: center; margin-bottom: 56px; }
+    .doc-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.28);
+      border-radius: 50px; padding: 9px 22px; font-size: 13px; font-weight: 700;
+      color: #0284C7; margin-bottom: 20px;
+    }
+    .doc-title {
+      font-family: 'Unbounded', sans-serif; font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900; color: #0C1A2E; line-height: 1.15; margin-bottom: 16px;
+    }
+    .doc-title span { color: #0EA5E9; }
+    .doc-meta { font-size: 14px; color: #64748B; }
+    .doc-meta strong { color: #334155; }
+
+    /* Sections */
+    .doc-section {
+      background: #fff; border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 20px; padding: 32px 36px; margin-bottom: 20px;
+      box-shadow: 0 4px 18px rgba(14,165,233,0.07);
+    }
+    .doc-section-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #0EA5E9, #84CC16);
+      font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 900; color: #fff;
+      flex-shrink: 0; margin-bottom: 14px;
+    }
+    .doc-section h2 {
+      font-family: 'Unbounded', sans-serif; font-size: 17px; font-weight: 800;
+      color: #0C1A2E; margin-bottom: 14px; line-height: 1.3;
+    }
+    .doc-section p {
+      font-size: 15px; color: #334155; line-height: 1.75; margin-bottom: 12px;
+    }
+    .doc-section p:last-child { margin-bottom: 0; }
+    .doc-section ul {
+      list-style: none; display: grid; gap: 8px; margin: 12px 0;
+    }
+    .doc-section ul li {
+      font-size: 15px; color: #334155; line-height: 1.65;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .doc-section ul li::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: linear-gradient(135deg, #0EA5E9, #84CC16);
+      flex-shrink: 0; margin-top: 7px;
+    }
+    .doc-section strong { color: #0C1A2E; font-weight: 700; }
+    .doc-section a { color: #0284C7; font-weight: 600; text-decoration: underline; }
+
+    /* Highlight box */
+    .doc-highlight {
+      background: rgba(14,165,233,0.07); border: 1px solid rgba(14,165,233,0.22);
+      border-radius: 12px; padding: 16px 20px; margin: 14px 0;
+      font-size: 14px; color: #334155; line-height: 1.65;
+    }
+    .doc-highlight strong { color: #0284C7; }
+
+    /* Rights grid */
+    .rights-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px;
+    }
+    .right-item {
+      background: rgba(132,204,22,0.07); border: 1px solid rgba(132,204,22,0.25);
+      border-radius: 12px; padding: 14px 16px;
+    }
+    .right-item strong {
+      display: block; font-size: 13px; font-weight: 800; color: #65A30D; margin-bottom: 4px;
+    }
+    .right-item span { font-size: 13px; color: #475569; line-height: 1.55; }
+
+    /* Contact card */
+    .contact-card {
+      background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(132,204,22,0.06));
+      border: 1px solid rgba(14,165,233,0.22); border-radius: 16px;
+      padding: 24px 28px; display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 14px;
+    }
+    .contact-card-info strong { display: block; font-size: 15px; font-weight: 800; color: #0C1A2E; margin-bottom: 4px; }
+    .contact-card-info span { font-size: 14px; color: #475569; }
+    .contact-card-btn {
+      background: linear-gradient(135deg, #0EA5E9, #0284C7);
+      color: #fff; border: none; border-radius: 999px;
+      padding: 12px 24px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: none;
+      transition: transform 0.22s, box-shadow 0.22s;
+      box-shadow: 0 4px 16px rgba(14,165,233,0.35);
+    }
+    .contact-card-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(14,165,233,0.45); }
+
+    /* Footer */
+    .doc-footer {
+      text-align: center; margin-top: 48px; font-size: 13px; color: #94A3B8;
+    }
+    .doc-footer a { color: #64748B; text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      header { padding: 14px 18px; }
+      main { padding: 40px 18px 72px; }
+      .doc-section { padding: 24px 20px; }
+      .rights-grid { grid-template-columns: 1fr; }
+      .contact-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-grid"></div>
+
+  <!-- HEADER -->
+  <header>
+    <a href="landing.html" class="logo">NEZ<span>OR</span></a>
+    <a href="landing.html" class="back-btn">← Vissza a főoldalra</a>
+  </header>
+
+  <main>
+
+    <!-- Hero -->
+    <div class="doc-hero">
+      <div class="doc-badge">📋 Jogi dokumentum</div>
+      <h1 class="doc-title">Adatkezelési<br><span>Tájékoztató</span></h1>
+      <p class="doc-meta">
+        <strong>Hatályos:</strong> 2026. január 1-től ·
+        <strong>Utoljára frissítve:</strong> 2026. június 1.
+      </p>
+    </div>
+
+    <!-- 1. Adatkezelő -->
+    <div class="doc-section">
+      <div class="doc-section-num">1</div>
+      <h2>Az adatkezelő adatai</h2>
+      <div class="doc-highlight">
+        <strong>NEZOR Webfejlesztés</strong><br>
+        Képviselők: Müller Dániel és Jelencsity Miklós<br>
+        Székhely: Baja, Magyarország<br>
+        E-mail: <a href="mailto:info@nezor.hu">info@nezor.hu</a><br>
+        Weboldal: <a href="https://nezor.hu">nezor.hu</a>
+      </div>
+      <p>Az adatkezelő a jelen tájékoztatóban foglaltak szerint kezeli az Ön személyes adatait az Európai Unió 2016/679 számú Általános Adatvédelmi Rendeletének (GDPR) és a vonatkozó magyar jogszabályoknak megfelelően.</p>
+    </div>
+
+    <!-- 2. Milyen adatokat gyűjtünk -->
+    <div class="doc-section">
+      <div class="doc-section-num">2</div>
+      <h2>Milyen adatokat kezelünk?</h2>
+      <p>A landing oldalon keresztül történő feliratkozás során az alábbi személyes adatokat kezeljük:</p>
+      <ul>
+        <li><strong>E-mail cím</strong> — a feliratkozási űrlap kitöltésekor megadott</li>
+        <li><strong>IP-cím</strong> — automatikusan rögzítve a szerver által a látogatás során</li>
+        <li><strong>Feliratkozás időpontja</strong> — automatikusan rögzített technikai adat</li>
+      </ul>
+      <p>Más személyes adatot (pl. telefonszám, lakcím) ezen az oldalon nem gyűjtünk.</p>
+    </div>
+
+    <!-- 3. Miért és meddig -->
+    <div class="doc-section">
+      <div class="doc-section-num">3</div>
+      <h2>Az adatkezelés célja és jogalapja</h2>
+      <p>Az e-mail cím kezelésének célja az ingyenes útmutató és a 10% kuponkód eljuttatása, valamint az azt követő — előzetesen ígért — tájékoztató tartalmak küldése.</p>
+      <div class="doc-highlight">
+        <strong>Jogalap:</strong> Az érintett önkéntes hozzájárulása (GDPR 6. cikk (1) bekezdés a) pont) — az űrlap kitöltésével és elküldésével Ön kifejezetten hozzájárul az adatkezeléshez.
+      </div>
+      <p><strong>Megőrzési idő:</strong> Az adatokat a feliratkozástól számított legfeljebb 2 évig őrizzük meg, vagy amíg Ön a leiratkozást nem kéri — amelyik előbb következik be.</p>
+    </div>
+
+    <!-- 4. Adattovábbítás -->
+    <div class="doc-section">
+      <div class="doc-section-num">4</div>
+      <h2>Kinek adjuk át az adatokat?</h2>
+      <p>Az Ön e-mail címét harmadik fél részére nem adjuk el és nem adjuk át, kivéve az alábbi eseteket:</p>
+      <ul>
+        <li><strong>Email küldő szolgáltatás</strong> (pl. Mailchimp, Brevo vagy hasonló) — kizárólag az üzenetek technikai kézbesítéséhez szükséges mértékben</li>
+        <li><strong>Jogszabályi kötelezettség</strong> esetén — ha hatóság jogszerű megkeresés alapján kéri</li>
+      </ul>
+      <p>Az adatfeldolgozók az adatokat az adatkezelő utasításai szerint, kizárólag a megjelölt célra használhatják fel.</p>
+    </div>
+
+    <!-- 5. Az érintett jogai -->
+    <div class="doc-section">
+      <div class="doc-section-num">5</div>
+      <h2>Az Ön jogai</h2>
+      <p>A GDPR alapján Önt az alábbi jogok illetik meg személyes adataival kapcsolatban:</p>
+      <div class="rights-grid">
+        <div class="right-item">
+          <strong>Hozzáférés joga</strong>
+          <span>Tájékoztatást kérhet arról, hogy milyen adatait kezeljük és hogyan.</span>
+        </div>
+        <div class="right-item">
+          <strong>Törlés joga</strong>
+          <span>Bármikor kérheti adatai törlését ("elfeledtetés joga").</span>
+        </div>
+        <div class="right-item">
+          <strong>Helyesbítés joga</strong>
+          <span>Kérheti a pontatlan adatok kijavítását vagy kiegészítését.</span>
+        </div>
+        <div class="right-item">
+          <strong>Tiltakozás joga</strong>
+          <span>Tiltakozhat adatai kezelése ellen, pl. marketing célból.</span>
+        </div>
+        <div class="right-item">
+          <strong>Hordozhatóság joga</strong>
+          <span>Kérheti adatait géppel olvasható formátumban.</span>
+        </div>
+        <div class="right-item">
+          <strong>Leiratkozás joga</strong>
+          <span>Bármikor leiratkozhat, minden levélben megtalálja a linket.</span>
+        </div>
+      </div>
+      <p style="margin-top:16px;">Jogai gyakorlásához írjon az alábbi elérhetőségre — <strong>30 napon belül</strong> válaszolunk.</p>
+    </div>
+
+    <!-- 6. Cookie-k -->
+    <div class="doc-section">
+      <div class="doc-section-num">6</div>
+      <h2>Cookie-k (sütik)</h2>
+      <p>Ez az oldal alapvetően csak technikai sütiket használ a működéshez szükséges mértékben. Marketing vagy nyomkövető cookie-kat kizárólag az Ön előzetes hozzájárulásával alkalmazunk.</p>
+      <ul>
+        <li><strong>Munkamenet cookie</strong> — az oldal működéséhez szükséges, session végén törlődik</li>
+        <li><strong>Analitika</strong> — aggregált, személyazonosításra nem alkalmas látogatottsági adatok</li>
+      </ul>
+    </div>
+
+    <!-- 7. Panasz -->
+    <div class="doc-section">
+      <div class="doc-section-num">7</div>
+      <h2>Jogorvoslat, panasz</h2>
+      <p>Ha úgy érzi, hogy adatait jogellenesen kezeljük, jogorvoslatért fordulhat a <strong>Nemzeti Adatvédelmi és Információszabadság Hatósághoz (NAIH)</strong>:</p>
+      <div class="doc-highlight">
+        <strong>NAIH</strong> · 1055 Budapest, Falk Miksa utca 9–11.<br>
+        Web: <a href="https://naih.hu" target="_blank" rel="noopener">naih.hu</a> · E-mail: <a href="mailto:ugyfelszolgalat@naih.hu">ugyfelszolgalat@naih.hu</a>
+      </div>
+    </div>
+
+    <!-- Kapcsolat -->
+    <div class="doc-section">
+      <div class="doc-section-num">✉</div>
+      <h2>Kapcsolat adatvédelmi ügyekben</h2>
+      <p>Kérdés, adattörlési kérelem vagy bármilyen adatvédelmi ügyben keressen minket:</p>
+      <div class="contact-card">
+        <div class="contact-card-info">
+          <strong>NEZOR Webfejlesztés</strong>
+          <span>info@nezor.hu · Válasz 30 napon belül</span>
+        </div>
+        <a href="mailto:info@nezor.hu" class="contact-card-btn">Írj nekünk →</a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <p>© 2026 NEZOR Webfejlesztés · Müller Dániel & Jelencsity Miklós</p>
+      <p style="margin-top:6px;"><a href="landing.html">← Vissza a főoldalra</a></p>
+    </div>
+
+  </main>
+
+</body>
+</html>
